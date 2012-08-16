@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>Web File Browser</title>
+<style type="text/css" media=screen>
+<!--
+body       { background-color: white; color: black; }
+p          { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
+ul         { font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }
+h1         { font-family: Arial, Helvetica, sans-serif; font-size: 16pt; }
+h2         { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; }
+a:link     { color: blue; text-decoration: none; }
+a:active   { color: red; text-decoration: underline; }
+a:visited  { color: blue; text-decoration: none; }
+a:hover    { color: red; text-decoration: underline; }
+-->
+</style>
+</head>
+<body>
+<table border=0>
+<tr>
+<tr><td width=600>
+<center><img src=logo.gif border=0></center>
+<h2>Introduction<br><hr></h2>
+<p>Web File Browser is a simple open-source file browser written in PHP (1 single file) that
+allows users to create, delete, edit, copy, rename, move and upload files and directories
+thru a light, full-text, web-based interface
+<a name=download>
+<h2>Download<br><hr></h2>
+<p>Web File Browser's home page is <a href=http://www.webfilebrowser.net>here</a>.
+<br>Web File Browser's project page at SourceForge is <a href=http://sourceforge.net/projects/webfilebrowser/>here</a>.
+<p>To <b>download</b> current version <b>0.4b14</b> (still beta) go to <a href=http://sourceforge.net/project/showfiles.php?group_id=47688>Web File Browser's download page</a> at SourceForge.
+<a name=install>
+<h2>Installation<br><hr></h2>
+<p>Copy the <code>webFileBrowser.php</code> file to your target directory in your web server's document root.
+<br>Give any name to this file (it will remain invisible anyway) : <code>wfb.php</code> for instance.
+<p>Look at the source for optional customization.
+<p>Start your favorite Web Browser and point to <code>http://yourserver.yourdomain/yourdirectory/wfb.php</code>.
+<p>If you have just unziped the package and if this page is served by a PHP enabled web server :
+<center><h1><a href=webFileBrowser.php>Click HERE</a></h1></center>
+<p>It should be working...
+<p><b>Warning</b> for users of previous versions : some default settings have changed, check them carefully !
+<a name=custom>
+<h2>Customization<br><hr></h2>
+<p>Web File Browser allows you to customize certain features such as :
+<ul>
+<li>Title, colors, sizes...</li>
+<li>Enable/disable links on files</li>
+<li>Enable/disable file uploads</li>
+<li>Customize list of extensions that allow files to be edited</li>
+<li>...</li>
+</ul>
+<p>Give an eye to the source to see all options.
+<a name=security>
+<h2>Security<br><hr></h2>
+<p>Web file browser includes a builtin authentication (look at the source) but you *must* run PHP as a module in order to be able to turn it on.
+<p>You can also rely on your web server for authentication.
+<p>For instance with Apache you can setup a <code>.htaccess</code> file like this :
+<pre>
+&lt;Files "wfb.php"&gt;
+   AuthType Basic
+   AuthUserFile ".htpasswd"
+   AuthName "webFileBrowser"
+   Require valid-user
+&lt;/Files&gt;
+</pre>
+<a name=faq>
+<h2>FAQ<br><hr></h2>
+<p><b>File upload does not work, what's wrong ?</b>
+<p>There are two main reasons for that :
+<ul>
+<li>First, check your <code>php.ini</code> :
+<br><code>file_uploads = On</code>
+<br><code>upload_max_filesize = 2M</code>
+<br>and verify that the value in <code>$uploadmaxsize</code> variable is the same as this value (for istance 2M means 2 megabytes = 2097152 bytes)
+</li>
+<p><li>Second, if you run your PHP-enabled web server under UNIX, uploaded files (and created files/directories) are created under the ownership of the UNIX user that runs your webserver.
+<br>As the PHP function <code>chown()</code> does not work unless this user is <code>root</code> (which is obviously a bad idea) it is not possible to chown files to another user after creation.
+<br>A simple workaround is to chown/chgrp your directories to the webbrowser user/group,
+<br>Another workaround is to add the webbrowser group to the secondary groups of the user owner of the directories (that's what I do). In that case remeber to set <code>$filemode</code> to <code>0664</code> and <code>$dirmode</code> to <code>0775</code>.
+</li>
+</ul>
+<p><b>URL upload does not work, what's wrong ?</b>
+<p>Check your <code>php.ini</code> :
+<br><code>allow_url_fopen = On</code>
+<br>and keep in mind that only URL explicitely pointing to a file (such as <code>http://myserver/myfile.txt</code>) can be URL-uploaded.
+<p><b>How do I hide files ?</b>
+<p>Customize <code>$hidefilepattern</code> so as it contains a regular expression matching the name of the files you want to hide.
+<br>An example is given is the source to hide dot files.
+<p><b>Why "delete" action does not appear ?</b>
+<p>When you delete a file Web File Browser just move it into the trash can directory.
+This directory (located in the base directory) must exists and be writeable,
+if not the delete button is inhibited.
+<br>You can customize its name using <code>$trashcan</code>.
+<p><b>Which web browsers are supported ?</b>
+<p>WebFileBrowser have been tested on Internet Explorer 6.0, Netscape 4.75 and Netscape 7.0.
+It should work with other W3C compliant browsers, if not tell me what goes wrong !
+<p>Feel free to ask <a href=mailto:cgdave@wanadoo.fr>me</a> any question 
+<a name=bugs>
+<h2>BUGS<br><hr></h2>
+<p>None reported on current version for the moment. But there are certainly some...
+<p>Feel free to report <a href=mailto:cgdave@wanadoo.fr>me</a> any problem.
+<a name=todo>
+<h2>TODO List<br><hr></h2>
+<p>Identified features that will be soon develloped :
+<ul>
+<li>Handling of multiple uploads</li>
+<li>Zip/Unzip files and directories</li>
+<li>Reorganization of the code and added comments</li>
+</ul>
+<p>Feel free to send <a href=mailto:cgdave@wanadoo.fr>me</a> any feature request. 
+<a name=help>
+<h2>Help needed<br><hr></h2>
+<p>The internationalization effort has just began. These language are now supported :
+<ul>
+<li>English (corrected by Randall COHEN)</li>
+<li>French</li>
+<li>Spanish and Catalan thanks to Albert LOMBARTE</li>
+<li>German thanks to Johannes EDER</li>
+<li>Swedish thanks to Mikael WANBERG</li>
+<li>Ukranian thanks to Dmytro KOVALOV</li>
+<li>Dutch thanks to Luk VANLANDUYT</li>
+<li>Norwegian thanks to Paul LOE</li>
+<li>Finnish thanks to Petteri HIETAVIRTA</li>
+<li>Turkish thanks to Tayfun BILSEL</li>
+<li>Greek thanks to Balaskas EUAGGELOS</li>
+<li>Polish thanks to Slawomir BROWKIN</li>
+</ul>
+<p>If someone is interested in translating Web File Browser in other languages (or in improving my rather approximative english) let <a href=mailto:cgdave@wanadoo.fr>me</a> know.
+<a name=history>
+<h2>History<br><hr></h2>
+<ul>
+<li><b>Versions 0.1a, 0.2a and 0.3a</b> were alpha versions not worth publishing...</li>
+<li><b>Version 0.4b1</b> was first beta version.</li>
+<li><b>Versions 0.4b2 and 0.4b3</b> fixed few bugs and added few sub-features</li>
+<li><b>Versions 0.4b4, 0.4b5, 0.4b6</b> fixed few bugs and added trash can management</li>
+<li><b>Version 0.4b7</b> added direct links to main directory and trash can and README file management</li>
+<li><b>Version 0.4b8</b> fixed a few bugs, added file restore feature in trash can and added URL upload feature</li>
+<li><b>Version 0.4b9</b> fixed a few bugs and added file aliasing feature</li>
+<li><b>Version 0.4b10</b> added multilingual support</li>
+<li><b>Version 0.4b11</b> fixed a few bugs regarding PHP warnings</li>
+<li><b>Version 0.4b12</b> fixed issue with "register_globals", added search (thanks to Larry CHAFFIN for the idea) and download features, added images (thaks again Larry), added optionnal images, fixed few bugs</li>
+<li><b>Version 0.4b13</b> reorganized PHP and generated HTML/Javascript code, added help messages in the status bar, added multiple file selection (also fixed few bugs)
+<li><b>Version 0.4b14</b> added profile management and other authentication methods, fixed some subtile bugs (thanks to Jean-Jacques LE MOUEL)
+</ul>
+<a name=legal>
+<h2>Disclaimer<br><hr></h2>
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+<br>without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+<br>See the <a href=http://www.gnu.org/copyleft/gpl.html>GNU General Public License</a> for more details.
+<h2>License<br><hr></h2>
+<p>This program is free software; you can redistribute it and/or modify it under the terms of
+<br>the <a href=http://www.gnu.org/copyleft/gpl.html>GNU General Public License</a> as published by the Free Software Foundation
+</td></tr>
+</table>
+</body>
+</html>
