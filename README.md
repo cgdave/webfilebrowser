@@ -1,4 +1,1 @@
-webfilebrowser
-==============
-
 Web File Browser
