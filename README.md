@@ -42,7 +42,7 @@ Web File Browser includes a builtin authentication (look at the source).
 
 You can also rely on your web server for authentication. 
 
-For instance with Apache you can setup a .htaccess file like this:
+For instance with Apache you can setup a `.htaccess` file like this:
 
 ```plain
 <Files "wfb.php">
