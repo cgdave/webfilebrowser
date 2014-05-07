@@ -26,7 +26,7 @@ Customization
 
 Web File Browser allows you to customize some features such as:
 
-- Use icons or only text
+- Use optional icons or only text
 - Title, colors, sizes, ...
 - Enable/disable links on files
 - Enable/disable file uploads
