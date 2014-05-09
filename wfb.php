@@ -582,6 +582,7 @@ function pageHeader() {
    echo "\n<style type=\"text/css\">";
    echo "\nbody       { background-color: $bodybgcolor; color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
    echo "\nimg        { border: none 0px; }";
+   echo "\nform       { margin: 0px; padding: 0px; }";
    echo "\ntable      { border: none 0px; border-collapse: collapse; }";
    echo "\ntd         { padding: 5px; }";
    echo "\np          { color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
@@ -1240,9 +1241,9 @@ if (($act != "edit") && ($act != "show")) {
 // Common part of the page
 pageHeader();
 
-echo "<p><table>";
 if ($allowsearch) echo "<form action=\"$thisscript\" method=\"get\" name=\"searchForm\">";
-echo "<tr><td width=".(($showunixattrs) ? 310 : 360)."><b>";
+echo "<p><table>";
+echo "<tr><td style=\"width: ".(($showunixattrs) ? 310 : 360)."px\"><b>";
 if ($useimages) echo "<img src=\"$imagesdir/$opendirimage\" align=\"center\"> ";
 
 if ($act == "search") {
@@ -1278,8 +1279,8 @@ if ($allowsearch && ($subdir != $trashcan) && (($act == "") || ($act == "search"
 }
 
 echo"</tr>";
-if ($allowsearch) echo "</form>";
 echo "</table>";
+if ($allowsearch) echo "</form>";
 
 // Edit or show page
 if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($subdir != $trashcan)) {
@@ -1314,8 +1315,8 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "\n}";
             echo "\n</script>\n";
 
-            echo "<p><table>";
             echo "<form action=\"$thisscript\" method=\"post\" name=\"editForm\">";
+            echo "<p><table>";
             echo "<input name=\"act\" type=\"hidden\" value=\"save\"/>";
             echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
             echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
@@ -1339,8 +1340,8 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "<input type=\"button\" value=\"".$messages["sav5"]."\" onClick=\"cancelEdit();\">";
             echo "</td>";
             echo "</tr>";
-            echo "</form>";
             echo "</table>";
+            echo "</form>";
          } else {
             echo "<p><b>".$messages["edt9"]." : </b>".htmlspecialchars($file);
             echo "<p><table>";
@@ -1354,7 +1355,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
    }
 // File list page
 } else {
-   echo "\n<script text=\"text/javascript\">";
+   echo "\n<script type=\"text/javascript\">";
    echo "\nfunction submitListForm(action) {";
    echo    "\nf = document.listForm;";
    echo    "\nfilechecked = 0;";
@@ -1763,72 +1764,72 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
 
          if (   ($act != "search")
              && $allowcreatedir ) {
-            echo "<form action=\"$thisscript\" method=\"post\" name=\"createDirForm\">";
-            echo "<input name=\"act\" type=\"hidden\" value=\"mkdir\"/>";
-            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
-            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
             echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["mkd9"]." :&nbsp;";
             echo "</td>";
             echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"createDirForm\">";
+            echo "<input name=\"act\" type=\"hidden\" value=\"mkdir\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<input name=\"file\" type=\"text\" size=\"15\"> ";
             echo "<input type=\"button\" value=\"".$messages["mkd0"]."\" onClick=\"submitActForm(document.createDirForm, 'file', '".quoteJS($messages["mkd4"])."');\"/>";
+            echo "</form>";
             echo "</td>";
             echo "</tr>";
-            echo "</form>";
          }
          if (   ($act != "search")
              && $allowcreatefile ) {
-            echo "<form action=\"$thisscript\" method=\"post\" name=\"createFileForm\">";
-            echo "<input name=\"act\" type=\"hidden\" value=\"create\"/>";
-            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
-            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
             echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["cre9"]." :&nbsp;";
             echo "</td>";
             echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"createFileForm\">";
+            echo "<input name=\"act\" type=\"hidden\" value=\"create\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<input name=\"file\" type=\"text\" size=\"15\"/> ";
             echo "<input type=\"button\" value=\"".$messages["cre0"]."\" onClick=\"submitActForm(document.createFileForm, 'file', '".quoteJS($messages["cre4"])."');\"/>";
+            echo "</form>";
             echo "</td>";
             echo "</tr>";
-            echo "</form>";
          }
          if (   ($act != "search")
              && $allowupload ) {
-            echo "<form action=\"$thisscript\" method=\"post\" enctype=\"multipart/form-data\" name=\"uploadFileForm\">";
-            echo "<input name=\"act\" type=\"hidden\" value=\"upload\"/>";
-            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
-            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
-            echo "<input name=\"max_file_size\" type=\"hidden\" value=$uploadmaxsize/>";
             echo "<tr>";
             echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["fup9"]." :&nbsp;";
             echo "</td>";
             echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<form action=\"$thisscript\" method=\"post\" enctype=\"multipart/form-data\" name=\"uploadFileForm\">";
+            echo "<input name=\"act\" type=\"hidden\" value=\"upload\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
+            echo "<input name=\"max_file_size\" type=\"hidden\" value=$uploadmaxsize/>";
             echo "<input name=\"file\" type=\"file\" size=\"15\"/> ";
             echo "<input type=\"button\" value=\"".$messages["fup0"]."\" onClick=\"submitActForm(document.uploadFileForm, 'file', '".quoteJS($messages["fup4"])."');\"/>";
+            echo "</form>";
             echo "</td>";
             echo "</tr>";
-            echo "</form>";
          }
          if (   ($act != "search")
              && $allowurlupload) {
-            echo "<form action=\"$thisscript\" method=\"post\" name=\"uploadUrlForm\">";
-            echo "<input name=\"act\" type=\"hidden\" value=\"urlupload\"/>";
-            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
-            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
             echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["uup9"]." :&nbsp;";
             echo "</td>";
             echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
             echo "<input name=\"file\" type=\"text\" size=\"15\" value=\"http://\"/> ";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"uploadUrlForm\">";
+            echo "<input name=\"act\" type=\"hidden\" value=\"urlupload\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<input type=\"button\" value=\"".$messages["uup0"]."\" onClick=\"submitActForm(document.uploadUrlForm, 'file', '".quoteJS($messages["uup4"])."');\"/>";
+            echo "</form>";
             echo "</td>";
             echo "</tr>";
-            echo "</form>";
          }
       }
 
