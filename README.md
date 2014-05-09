@@ -149,6 +149,7 @@ History
 - Version 0.4b12 fixed issue with "register_globals", added search (thanks to Larry CHAFFIN for the idea) and download features, added images (thaks again Larry), added optionnal images, fixed few bugs
 - Version 0.4b13 reorganized PHP and generated HTML/Javascript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) 
 - Version 0.4b14 added profile management and other authentication methods, fixed some subtile bugs (thanks to Jean-Jacques LE MOUEL) 
+- Version 0.4b15 migrated to GitHub, started modernization
  
 Disclaimer
 ---------
