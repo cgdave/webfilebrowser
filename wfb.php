@@ -3,11 +3,7 @@
 //
 // Name        : Web File Browser
 //
-// Description : A web-based file browser written in PHP
-//
-// HomePage    : http://www.webfilebrowser.org/
-//
-// Author      : David AZOULAY (cgdave@wanadoo.fr)
+// Description : A web file browser written in PHP
 //
 // History     : 02/20/2002 - Alpha version 0.1a
 //               02/23/2002 - Alpha version 0.2a
@@ -26,6 +22,7 @@
 //               07/04/2002 - Beta version 0.4b12
 //               08/02/2002 - Beta version 0.4b13
 //               09/02/2002 - Beta version 0.4b14
+//               05/09/2014 - Beta version 0.4b15 (at last ;-)
 //
 // Credits :     Thanks to Albert LOMBARTE for the spanish and catalan version
 //               Thanks to Johannes EDER for the german version
@@ -42,12 +39,7 @@
 //               Thanks to Slawomir BROWKIN for the Polish version
 //
 // TODO list   : Zip and unzip files and directories
-//               Multiple file upload (not simple stuff !)
-//               Comments ;-)
-//
-// Knowns BUGS : It had been tested mostly on IE 6.0, NS 4.7, NS 7.0 and Opera 6 
-//               (under Windows but also under MacOS and Linux) without 
-//               significant problems...
+//               Multiple file upload
 //
 // Legal stuff : 
 //
@@ -60,16 +52,11 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 //
-// For US citizens : This program is not suitable for feeding pets, cannot
-// be used to sail on the ocean, must not be put in a microwave oven
-// etc... The author absolutely declines any responsability for whatever
-// usage that would give the idea to the user to sue him ;-)
-//
 //======================================================================
 
 // ---------------- Things that can be customized... -------------------
 
-$title = "Web File Browser 0.4b14";// Title (may contain HTML tags)
+$title = "Web File Browser 0.4b15";// Title (may contain HTML tags)
 $windowtitle = $title;             // Window title (text only)
 $defaultstatusmsg = $title;        // Default status message (text only)
 
@@ -598,13 +585,15 @@ function pageHeader() {
    if ($hiddeninfo != "") {
       echo "\n<!--\nINFO :$hiddeninfo\n-->\n";
    }
+   echo "\n<!DOCTYPE html>";
    echo "\n<html>";
    echo "\n<head>";
    echo "\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$charset\">";
    echo "\n<title>$windowtitle</title>";
-   echo "\n<style type=\"text/css\" media=screen>";
-   echo "\n<!--";
+   echo "\n<style type=\"text/css\">";
    echo "\nbody       { background-color: $bodybgcolor; color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
+   echo "\ntable      { border: none 0px; border-collapse: collapse; }";
+   echo "\ntd         { padding: 5px; }";
    echo "\np          { color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
    echo "\n.info      { color: $infocolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
    echo "\n.warning   { color: $warningcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
@@ -621,16 +610,13 @@ function pageHeader() {
    echo "\na:active   { color: $actlinkcolor; text-decoration: underline; }";
    echo "\na:visited  { color: $linkcolor; text-decoration: none; }";
    echo "\na:hover    { color: $actlinkcolor; text-decoration: underline; }";
-   echo "\n-->";
    echo "\n</style>";
-   echo "\n<script language=\"javascript\">";
-   echo "\n<!--";
+   echo "\n<script type=\"text/javascript\">";
    echo "\nfunction statusMsg(txt) {";
    echo    "\nif (txt == '') txt = '$defaultstatusmsg';";
    echo    "\nwindow.status = txt;";
    echo    "\nreturn true;";
    echo "\n}";
-   echo "\n//-->";
    echo "\n</script>";
    echo "\n</head>";
    echo "\n<body onLoad='return statusMsg(\"\")'>\n";
@@ -653,8 +639,8 @@ function pageFooter() {
 $hiddeninfo = "";
 
 // Getting variables (TODO : increase security here)
-if (!empty($HTTP_POST_VARS)) extract($HTTP_POST_VARS);
-if (!empty($HTTP_GET_VARS)) extract($HTTP_GET_VARS);
+if (!empty($_POST)) extract($_POST);
+if (!empty($_GET)) extract($_GET);
 
 if (function_exists("ini_set")) {
    // Try to inhibate error reporting setting
@@ -710,7 +696,7 @@ $thisfile = strtolower(@basename(__FILE__));
 $basedir = strtr($basedir, "\\", "/");
 
 // This script URI
-$thisscript = $HTTP_SERVER_VARS["PHP_SELF"];
+$thisscript = $_SERVER["PHP_SELF"];
 
 // General HTTP directives
 header("Expires: -1");
@@ -727,25 +713,25 @@ if ($authmethod == "session") {
    session_start();
 
    if (!session_is_registered("WFBUSER")) {
-      if (  isset($HTTP_POST_VARS["username"])
-         && isset($HTTP_POST_VARS["password"])
-         && isset($user[$HTTP_POST_VARS["username"]])
-         && ($HTTP_POST_VARS["password"] == $user[$HTTP_POST_VARS["username"]]["password"])) {
+      if (  isset($_POST["username"])
+         && isset($_POST["password"])
+         && isset($user[$_POST["username"]])
+         && ($_POST["password"] == $user[$_POST["username"]]["password"])) {
          session_register("WFBUSER");
-         $HTTP_SESSION_VARS["WFBUSER"] = $HTTP_POST_VARS["username"];
+         $_SESSION["WFBUSER"] = $_POST["username"];
          header("Location: $thisscript");
          exit;
       } else {
          pageHeader();
-         if (isset($HTTP_POST_VARS["username"])) echo getMsg("error", "rlm2");
-         echo "<form name=authForm method=post action=$thisscript>";
-         echo "<table border=0 cellspacing=0 cellpadding=10>";
-         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$HTTP_POST_VARS["username"]."\"></td></tr>";
+         if (isset($_POST["username"])) echo getMsg("error", "rlm2");
+         echo "<form name=\"authForm\" method=\"post\" action=\"$thisscript\">";
+         echo "<table>";
+         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$_POST["username"]."\"></td></tr>";
          echo "<tr><th>".$messages["rlm4"]."</th><td><input type=password name=password></td></tr>";
          echo "<tr><th>&nbsp;</th><td><center><input type=submit value=\"".$messages["rlm5"]."\"></center></td></tr>";
          echo "</table>";
          echo "</form>";
-         echo "<script language=javascript>document.authForm.username.select();document.authForm.username.focus();</script>";
+         echo "<script type=\"text/javascript\">document.authForm.username.select();document.authForm.username.focus();</script>";
          pageFooter();
          exit;
       }
@@ -755,29 +741,29 @@ if ($authmethod == "session") {
          header("Location: $thisscript");
          exit;
       } else {
-         $username = $HTTP_SESSION_VARS["WFBUSER"];
+         $username = $_SESSION["WFBUSER"];
       }
    }
 } else if ($authmethod == "cookie") {
-   if (!isset($HTTP_COOKIE_VARS["WFBUSER"])) {
-      if (  isset($HTTP_POST_VARS["username"])
-         && isset($HTTP_POST_VARS["password"])
-         && isset($user[$HTTP_POST_VARS["username"]])
-         && ($HTTP_POST_VARS["password"] == $user[$HTTP_POST_VARS["username"]]["password"])) {
-         setcookie("WFBUSER", $HTTP_POST_VARS["username"]);  
+   if (!isset($_COOKIE["WFBUSER"])) {
+      if (  isset($_POST["username"])
+         && isset($_POST["password"])
+         && isset($user[$_POST["username"]])
+         && ($_POST["password"] == $user[$_POST["username"]]["password"])) {
+         setcookie("WFBUSER", $_POST["username"]);  
          header("Location: $thisscript");
          exit;
       } else {
          pageHeader();
-         if (isset($HTTP_POST_VARS["username"])) echo getMsg("error", "rlm2");
-         echo "<form name=authForm method=post action=$thisscript>";
-         echo "<table border=0 cellspacing=0 cellpadding=10>";
-         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$HTTP_POST_VARS["username"]."\"></td></tr>";
+         if (isset($_POST["username"])) echo getMsg("error", "rlm2");
+         echo "<form name=\"authForm\" method=\"post\" action=\"$thisscript\">";
+         echo "<table>";
+         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$_POST["username"]."\"></td></tr>";
          echo "<tr><th>".$messages["rlm4"]."</th><td><input type=password name=password></td></tr>";
          echo "<tr><th>&nbsp;</th><td><center><input type=submit value=\"".$messages["rlm5"]."\"></center></td></tr>";
          echo "</table>";
          echo "</form>";
-         echo "<script language=javascript>document.authForm.username.select();document.authForm.username.focus();</script>";
+         echo "<script type=\"text/javascript\">document.authForm.username.select();document.authForm.username.focus();</script>";
          pageFooter();
          exit;
       }
@@ -787,13 +773,13 @@ if ($authmethod == "session") {
          header("Location: $thisscript");
          exit;
       } else {
-         $username = $HTTP_COOKIE_VARS["WFBUSER"];
+         $username = $_POST["WFBUSER"];
       }
    }
 } else if ($authmethod == "realm") {
-   if (  !isset($HTTP_SERVER_VARS["PHP_AUTH_USER"])
-      || (!isset($user[$HTTP_SERVER_VARS["PHP_AUTH_USER"]])
-      || ($HTTP_SERVER_VARS["PHP_AUTH_PW"] != $user[$HTTP_SERVER_VARS["PHP_AUTH_USER"]]["password"]))) {
+   if (  !isset($_SERVER["PHP_AUTH_USER"])
+      || (!isset($user[$_SERVER["PHP_AUTH_USER"]])
+      || ($_SERVER["PHP_AUTH_PW"] != $user[$_SERVER["PHP_AUTH_USER"]]["password"]))) {
       header("WWW-Authenticate: Basic realm=\"$realmname\"");
       header("HTTP/1.0 401 Unauthorized");
       pageHeader();
@@ -801,13 +787,13 @@ if ($authmethod == "session") {
       pageFooter();
       exit;
    } else {
-      $username = $HTTP_SERVER_VARS["PHP_AUTH_USER"];
+      $username = $_SERVER["PHP_AUTH_USER"];
    }
 } else if ($authmethod == "server") {
-   if (isset($HTTP_SERVER_VARS["PHP_AUTH_USER"])) {
-      $username = $HTTP_SERVER_VARS["PHP_AUTH_USER"];
-   } else if (isset($HTTP_ENV_VARS["REMOTE_USER"])) {
-      $username = $HTTP_ENV_VARS["REMOTE_USER"];
+   if (isset($_SERVER["PHP_AUTH_USER"])) {
+      $username = $_SERVER["PHP_AUTH_USER"];
+   } else if (isset($_ENV["REMOTE_USER"])) {
+      $username = $_ENV["REMOTE_USER"];
    }
 } else {
    $username = "";
@@ -1137,18 +1123,18 @@ if (($act != "edit") && ($act != "show")) {
          redirectWithMsg("warning", "cre4");
       }
    } else if ($allowupload && ($act == "upload") && ($subdir != $trashcan)) {
-      if (isset($HTTP_POST_FILES["file"]) && ($HTTP_POST_FILES["file"]["size"] > 0)) {
-         if (!checkFileName($HTTP_POST_FILES["file"]["name"]) || (($subdir == "") && ($HTTP_POST_FILES["file"]["name"] == $trashcan))) {
+      if (isset($_FILES["file"]) && ($_FILES["file"]["size"] > 0)) {
+         if (!checkFileName($_FILES["file"]["name"]) || (($subdir == "") && ($_FILES["file"]["name"] == $trashcan))) {
             redirectWithMsg("warning", "fup1");
          } else {
-            $fp = getFilePath($HTTP_POST_FILES["file"]["name"]);
+            $fp = getFilePath($_FILES["file"]["name"]);
 
-            if (@copy($HTTP_POST_FILES["file"]["tmp_name"], $fp)) {
-               @unlink($HTTP_POST_FILES["file"]["tmp_name"]);
+            if (@copy($_FILES["file"]["tmp_name"], $fp)) {
+               @unlink($_FILES["file"]["tmp_name"]);
                @chmod($fp, $filemode);
-               redirectWithMsg("info", "fup2", $HTTP_POST_FILES["file"]["name"]);
+               redirectWithMsg("info", "fup2", $_FILES["file"]["name"]);
             } else {
-               redirectWithMsg("error", "fup3", $HTTP_POST_FILES["file"]["name"]);
+               redirectWithMsg("error", "fup3", $_FILES["file"]["name"]);
             }
          }
       } else {
@@ -1296,8 +1282,8 @@ if (($act != "edit") && ($act != "show")) {
 // Common part of the page
 pageHeader();
 
-echo "<p><table border=0 cellspacing=2 cellpadding=2>";
-if ($allowsearch) echo "<form action=$thisscript method=get name=searchForm>";
+echo "<p><table>";
+if ($allowsearch) echo "<form action=\"$thisscript\" method=\"get\" name=\"searchForm\">";
 echo "<tr><td width=".(($showunixattrs) ? 310 : 360)."><b>";
 if ($useimages) echo "<img src=\"$imagesdir/$opendirimage\" align=center> ";
 
@@ -1315,7 +1301,7 @@ if ($act == "search") echo ")";
 
 echo "</b><br>".date($dateformat);
 if (($authmethod == "session") || ($authmethod == "cookie")) {
-   echo " (<a href=$thisscript?act=logout>".$messages["rlm6"]."</a>)";
+   echo " (<a href=\"$thisscript?act=logout\">".$messages["rlm6"]."</a>)";
 }
 echo "</td>";
 
@@ -1359,7 +1345,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          if ($act == "edit") {
             echo "<p><b>".$messages["edt8"]." : </b>".htmlspecialchars($file);
             
-            echo "\n<script language=\"javascript\">";
+			echo "\n<script type=\"text/javascript\">";
             echo "\n<!--";
             echo "\nfunction cancelEdit() {";
             echo    "\nf = document.editForm;";
@@ -1372,8 +1358,8 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "\n//-->";
             echo "\n</script>\n";
 
-            echo "<p><table border=0 cellspacing=0 cellpadding=10>";
-            echo "<form action=$thisscript method=post name=editForm>";
+            echo "<p><table>";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"editForm\">";
             echo "<input name=act type=hidden value=save>";
             echo "<input name=subdir type=hidden value=\"$subdir\">";
             echo "<input name=sortby type=hidden value=$sortby>";
@@ -1401,10 +1387,10 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "</table>";
          } else {
             echo "<p><b>".$messages["edt9"]." : </b>".htmlspecialchars($file);
-            echo "<p><table border=0 cellspacing=0 cellpadding=10>";
+            echo "<p><table>";
             echo "<tr><td width=700><pre>".htmlspecialchars($data)."</pre>&nbsp;</td></tr>";
             echo "</table>";
-            echo "<p><a href=$thisscript?subdir=".rawurlencode($subdir)."&sortby=$sortby onMouseOver='return statusMsg(\"".quoteJS($messages["edt12"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["edt12"]."</a>";
+            echo "<p><a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=$sortby\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt12"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["edt12"]."</a>";
          }
       }
    } else {
@@ -1412,7 +1398,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
    }
 // File list page
 } else {
-   echo "\n<script language=javascript>";
+   echo "\n<script text=\"text/javascript\">";
    echo "\n<!--";
    echo "\nfunction submitListForm(action) {";
    echo    "\nf = document.listForm;";
@@ -1539,8 +1525,8 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
    echo "\n</script>\n";
 
    if (!empty($files)) {
-      echo "<p><table border=0 cellspacing=2 cellpadding=2>";
-      echo "<form action=$thisscript method=post name=listForm>";
+      echo "<p><table>";
+      echo "<form action=\"$thisscript\" method=\"post\" name=\"listForm\">";
       echo "<input name=act type=hidden value=''>";
       echo "<input name=subdir type=hidden value=\"$subdir\">";
       echo "<input name=sortby type=hidden value=$sortby>";
@@ -1576,13 +1562,13 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
       echo "<th>".$messages["tab1"]."</th>";
       echo "<th>".$messages["tab2"]."</th>";
       echo "<th>";
-      echo "<a href=$thisscript?subdir=".rawurlencode($subdir)."&sortby=name".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")." onMouseOver='return statusMsg(\"".quoteJS($messages["inf1"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab3"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=name".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf1"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab3"]."</a>";
       echo "</th>";
       echo "<th>";
-      echo "<a href=$thisscript?subdir=".rawurlencode($subdir)."&sortby=size".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")." onMouseOver='return statusMsg(\"".quoteJS($messages["inf2"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab4"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=size".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf2"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab4"]."</a>";
       echo "</th>";
       echo "<th>";
-      echo "<a href=$thisscript?subdir=".rawurlencode($subdir)."&sortby=date".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")." onMouseOver='return statusMsg(\"".quoteJS($messages["inf3"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab5"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=date".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf3"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab5"]."</a>";
       echo "</th>";
 
       if ($showunixattrs) {
@@ -1619,7 +1605,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
                if ($file["link"]) {
                   echo "<i><b>".htmlspecialchars($file["name"])."</b></i>";
                } else {
-                  echo "<a href=$thisscript?subdir=".rawurlencode(extractSubdir($file["path"]))."&sortby=$sortby onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
+                  echo "<a href=\"$thisscript?subdir=".rawurlencode(extractSubdir($file["path"]))."&sortby=$sortby\" onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
                   echo "<b>".$file["alias"]."</b>";
                   echo "</a>";
                }
@@ -1650,11 +1636,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "<td>".(($file["link"]) ? "<i>" : "");
             if ($filelinks) {
                if ($basevirtualdir == "") {
-                  echo "<a href=".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])));
+                  echo "<a href=\"".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])));
                } else {
-                  echo "<a href=".$basevirtualdir."/".rawurlencode($file["name"]);
+                  echo "<a href=\"".$basevirtualdir."/".rawurlencode($file["name"]);
                }
-               echo " onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
+               echo "\" onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
                echo $file["alias"];
                echo "</a>";
             } else {
@@ -1673,12 +1659,12 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "<td align=center>&nbsp;";
             if (($act != "search") && ($allowedit || $allowshow) && checkExtension($file["name"]) && ($subdir != $trashcan)) {
                if (!$file["readonly"] && $allowedit) {
-                  echo "<a href=$thisscript?act=edit&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])." onMouseOver='return statusMsg(\"".quoteJS($messages["edt8"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$editimage\" border=0>" : $messages["edt10"])."</a> ";
+                  echo "<a href=\"$thisscript?act=edit&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt8"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$editimage\" border=0>" : $messages["edt10"])."</a> ";
                }
-               echo "<a href=$thisscript?act=show&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])." onMouseOver='return statusMsg(\"".quoteJS($messages["edt9"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$viewimage\" border=0>" : $messages["edt11"])."</a> ";
+               echo "<a href=\"$thisscript?act=show&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt9"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$viewimage\" border=0>" : $messages["edt11"])."</a> ";
             } 
             if (($allowdownload) && ($subdir != $trashcan)) {
-               echo "<a href=$thisscript?act=download&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])))." onMouseOver='return statusMsg(\"".quoteJS($messages["dwn5"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$downloadimage\" border=0>" : $messages["dwn1"])."</a> ";
+               echo "<a href=\"$thisscript?act=download&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])))."\" onMouseOver='return statusMsg(\"".quoteJS($messages["dwn5"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$downloadimage\" border=0>" : $messages["dwn1"])."</a> ";
             }
             echo "</td>";
             echo "</tr>";
@@ -1823,7 +1809,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
 
          if (   ($act != "search")
              && $allowcreatedir ) {
-            echo "<form action=$thisscript method=post name=createDirForm>";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"createDirForm\">";
             echo "<input name=act type=hidden value=mkdir>";
             echo "<input name=subdir type=hidden value=\"$subdir\">";
             echo "<input name=sortby type=hidden value=$sortby>";
@@ -1840,7 +1826,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          }
          if (   ($act != "search")
              && $allowcreatefile ) {
-            echo "<form action=$thisscript method=post name=createFileForm>";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"createFileForm\">";
             echo "<input name=act type=hidden value=create>";
             echo "<input name=subdir type=hidden value=\"$subdir\">";
             echo "<input name=sortby type=hidden value=$sortby>";
@@ -1857,7 +1843,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          }
          if (   ($act != "search")
              && $allowupload ) {
-            echo "<form action=$thisscript method=post enctype=multipart/form-data name=uploadFileForm>";
+            echo "<form action=\"$thisscript\" method=\"post\" enctype=\"multipart/form-data\" name=\"uploadFileForm\">";
             echo "<input name=act type=hidden value=upload>";
             echo "<input name=subdir type=hidden value=\"$subdir\">";
             echo "<input name=sortby type=hidden value=$sortby>";
@@ -1875,7 +1861,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          }
          if (   ($act != "search")
              && $allowurlupload) {
-            echo "<form action=$thisscript method=post name=uploadUrlForm>";
+            echo "<form action=\"$thisscript\" method=\"post\" name=\"uploadUrlForm\">";
             echo "<input name=act type=hidden value=urlupload>";
             echo "<input name=subdir type=hidden value=\"$subdir\">";
             echo "<input name=sortby type=hidden value=$sortby>";
