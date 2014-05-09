@@ -1821,11 +1821,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo $messages["uup9"]." :&nbsp;";
             echo "</td>";
             echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
-            echo "<input name=\"file\" type=\"text\" size=\"15\" value=\"http://\"/> ";
             echo "<form action=\"$thisscript\" method=\"post\" name=\"uploadUrlForm\">";
             echo "<input name=\"act\" type=\"hidden\" value=\"urlupload\"/>";
             echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
             echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
+            echo "<input name=\"file\" type=\"text\" size=\"15\" value=\"http://\"/> ";
             echo "<input type=\"button\" value=\"".$messages["uup0"]."\" onClick=\"submitActForm(document.uploadUrlForm, 'file', '".quoteJS($messages["uup4"])."');\"/>";
             echo "</form>";
             echo "</td>";
