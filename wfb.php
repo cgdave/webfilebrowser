@@ -107,26 +107,15 @@ $editcols = 80;                    // Number of columns for edit area
 $editrows = 24;                    // Number of rows for edit area
 $defaultfileformat = "dos";        // Default file format when editing and saving (dos/unix)
 $viewextensions = array(           // Viewable extensions (empty array means every file is viewable)
-   "txt",
-   "php",
-   "php3",
-   "jsp",
-   "asp",
-   "htm",
-   "html",
-   "shtml",
-   "xml",
-   "wml",
-   "js",
-   "css",
-   "cgi"
+   "txt", "cgi", "sh", "sql",
+   "php", "php3", "jsp", "asp",
+   "htm", "html", "shtml", "xml", "wml",
+   "js", "json", "css"
 );
 
 $authmethod = "none";      // Do not require user authentication
-//$authmethod = "session"; // Use builtin session-based authentication (recommended, needs the PHP session
-                           // management feature activated)
-//$authmethod = "cookie";  // Use builtin cookie-based authentication (not recommended : very basic, very UNSECURE)
-//$authmethod = "realm";   // Use builtin browser's basic authentication (needs PHP to be running as a module)
+//$authmethod = "session"; // Use builtin session-based authentication (needs the PHP sessions)
+//$authmethod = "realm";   // Use builtin browser's basic realm authentication
 //$authmethod = "server";  // Require server based authentication (such as Apache's .htaccess)
 
 $realmname = "Web File Browser";  // Realm name for use with $authmethod = "realm"
@@ -545,7 +534,7 @@ function addFileToList($file, $fp, $alias, $level, $image = "", $msg = "") {
 
    $files[$key] = array(
       "name" => $file,
-      "alias" => (($useimages) ? "<img src=\"$imagesdir/".(($image != "") ? $image : ((@is_dir($fp)) ? $dirimage : $fileimage))."\" border=0 align=center>&nbsp;" : "").(($subdir == $trashcan) ? ereg_replace("(.*)\.[0-9]*$", "\\1", $alias) : $alias),
+      "alias" => (($useimages) ? "<img src=\"$imagesdir/".(($image != "") ? $image : ((@is_dir($fp)) ? $dirimage : $fileimage))."\" style=\"text-align: center;\">&nbsp;" : "").(($subdir == $trashcan) ? ereg_replace("(.*)\.[0-9]*$", "\\1", $alias) : $alias),
       "level" => $level,
       "path" => $fp,
       "size" => $size,
@@ -566,7 +555,7 @@ function getMsg($class, $msgcode, $msgparam1 = "", $msgparam2 = "") {
 
    $msg = str_replace("%VAR1%", $msgparam1, str_replace("%VAR2%", $msgparam2, $messages[$msgcode]));
 
-   return (($class != "") ? "<p class=$class>" : "").htmlspecialchars($msg);
+   return (($class != "") ? "<p class=\"$class\">" : "").htmlspecialchars($msg) + "</p>";
 }
 
 // Manages redirections
@@ -592,6 +581,7 @@ function pageHeader() {
    echo "\n<title>$windowtitle</title>";
    echo "\n<style type=\"text/css\">";
    echo "\nbody       { background-color: $bodybgcolor; color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
+   echo "\nimg        { border: none 0px; }";
    echo "\ntable      { border: none 0px; border-collapse: collapse; }";
    echo "\ntd         { padding: 5px; }";
    echo "\np          { color: $bodyfgcolor; font-family: Arial, Helvetica, sans-serif; font-size: 10pt; }";
@@ -726,9 +716,9 @@ if ($authmethod == "session") {
          if (isset($_POST["username"])) echo getMsg("error", "rlm2");
          echo "<form name=\"authForm\" method=\"post\" action=\"$thisscript\">";
          echo "<table>";
-         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$_POST["username"]."\"></td></tr>";
-         echo "<tr><th>".$messages["rlm4"]."</th><td><input type=password name=password></td></tr>";
-         echo "<tr><th>&nbsp;</th><td><center><input type=submit value=\"".$messages["rlm5"]."\"></center></td></tr>";
+         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=\"text\" name=\"username\" value=\"".$_POST["username"]."\"></td></tr>";
+         echo "<tr><th>".$messages["rlm4"]."</th><td><input type=\"password\" name=\"password\"></td></tr>";
+         echo "<tr><th>&nbsp;</th><td><center><input type=\"submit\" value=\"".$messages["rlm5"]."\"></center></td></tr>";
          echo "</table>";
          echo "</form>";
          echo "<script type=\"text/javascript\">document.authForm.username.select();document.authForm.username.focus();</script>";
@@ -742,38 +732,6 @@ if ($authmethod == "session") {
          exit;
       } else {
          $username = $_SESSION["WFBUSER"];
-      }
-   }
-} else if ($authmethod == "cookie") {
-   if (!isset($_COOKIE["WFBUSER"])) {
-      if (  isset($_POST["username"])
-         && isset($_POST["password"])
-         && isset($user[$_POST["username"]])
-         && ($_POST["password"] == $user[$_POST["username"]]["password"])) {
-         setcookie("WFBUSER", $_POST["username"]);  
-         header("Location: $thisscript");
-         exit;
-      } else {
-         pageHeader();
-         if (isset($_POST["username"])) echo getMsg("error", "rlm2");
-         echo "<form name=\"authForm\" method=\"post\" action=\"$thisscript\">";
-         echo "<table>";
-         echo "<tr><th>".$messages["rlm3"]."</th><td><input type=text name=username value=\"".$_POST["username"]."\"></td></tr>";
-         echo "<tr><th>".$messages["rlm4"]."</th><td><input type=password name=password></td></tr>";
-         echo "<tr><th>&nbsp;</th><td><center><input type=submit value=\"".$messages["rlm5"]."\"></center></td></tr>";
-         echo "</table>";
-         echo "</form>";
-         echo "<script type=\"text/javascript\">document.authForm.username.select();document.authForm.username.focus();</script>";
-         pageFooter();
-         exit;
-      }
-   } else {
-      if ($act == "logout") {
-         setcookie("WFBUSER", "");  
-         header("Location: $thisscript");
-         exit;
-      } else {
-         $username = $_POST["WFBUSER"];
       }
    }
 } else if ($authmethod == "realm") {
@@ -1237,7 +1195,7 @@ if (($act != "edit") && ($act != "show")) {
                @fwrite($fd, $data);
                @fclose($fd);
 
-               redirectWithMsg("File $file saved (".strtoupper($fileformat)." format)", "info");
+               redirectWithMsg("", "File $file saved (".strtoupper($fileformat)." format)", "info");
             } else {
                $msg = getMsg("error", "sav2", $file);
                $data = stripslashes($data);
@@ -1285,7 +1243,7 @@ pageHeader();
 echo "<p><table>";
 if ($allowsearch) echo "<form action=\"$thisscript\" method=\"get\" name=\"searchForm\">";
 echo "<tr><td width=".(($showunixattrs) ? 310 : 360)."><b>";
-if ($useimages) echo "<img src=\"$imagesdir/$opendirimage\" align=center> ";
+if ($useimages) echo "<img src=\"$imagesdir/$opendirimage\" align=\"center\"> ";
 
 if ($act == "search") {
    echo getMsg("", "sch4", $searchpattern)." (";
@@ -1300,21 +1258,21 @@ if ($subdir == "") {
 if ($act == "search") echo ")";
 
 echo "</b><br>".date($dateformat);
-if (($authmethod == "session") || ($authmethod == "cookie")) {
+if ($authmethod == "session") {
    echo " (<a href=\"$thisscript?act=logout\">".$messages["rlm6"]."</a>)";
 }
 echo "</td>";
 
 if ($allowsearch && ($subdir != $trashcan) && (($act == "") || ($act == "search"))) {
-   echo "<td width=20 class=tdlt>&nbsp;</td>";
-   echo "<td class=tdlt>";
-   echo "<input name=act type=hidden value=search>";
-   echo "<input name=subdir type=hidden value=\"$subdir\">";
-   echo "<input name=sortby type=hidden value=$sortby>";
-   echo "<input name=searchpattern type=text size=15 value=\"$searchpattern\"> ";
-   echo "<input type=button value=\"".$messages["sch2"]."\" onClick='submitActForm(document.searchForm, \"searchpattern\", \"".quoteJS($messages["sch6"])."\")'>";
+   echo "<td style=\"width: 20px;\" class=\"tdlt\">&nbsp;</td>";
+   echo "<td class=\"tdlt\">";
+   echo "<input name=\"act\" type=\"hidden\" value=\"search\"/>";
+   echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+   echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
+   echo "<input name=\"searchpattern\" type=\"text\" size=\"15\" value=\"$searchpattern\"/> ";
+   echo "<input type=\"button\" value=\"".$messages["sch2"]."\" onClick=\"submitActForm(document.searchForm, 'searchpattern', '".quoteJS($messages["sch6"])."')\"/>";
    if ($allowregexpsearch) {
-      echo "<br><input type=checkbox value=true name=regexpsearch".(($regexpsearch) ? " checked" : "")."> ".$messages["sch7"];
+      echo "<br><input type=\"checkbox\" value=\"true\" name=\"regexpsearch\"".(($regexpsearch) ? " checked=\"checked\"" : "")."/> ".$messages["sch7"];
    }
    echo "</td>";
 }
@@ -1346,7 +1304,6 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "<p><b>".$messages["edt8"]." : </b>".htmlspecialchars($file);
             
 			echo "\n<script type=\"text/javascript\">";
-            echo "\n<!--";
             echo "\nfunction cancelEdit() {";
             echo    "\nf = document.editForm;";
             echo    "\nf.act.value = '';";
@@ -1355,32 +1312,31 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo    "\nf.method = 'get';";
             echo    "\nf.submit();";
             echo "\n}";
-            echo "\n//-->";
             echo "\n</script>\n";
 
             echo "<p><table>";
             echo "<form action=\"$thisscript\" method=\"post\" name=\"editForm\">";
-            echo "<input name=act type=hidden value=save>";
-            echo "<input name=subdir type=hidden value=\"$subdir\">";
-            echo "<input name=sortby type=hidden value=$sortby>";
-            echo "<input name=file type=hidden value=\"$file\">";
+            echo "<input name=\"act\" type=\"hidden\" value=\"save\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
+            echo "<input name=\"file\" type=\"hidden\" value=\"$file\"/>";
             echo "<tr>";
-            echo "<td colspan=3>";
-            echo "<textarea name=data cols=$editcols rows=$editrows>";
+            echo "<td colspan=\"3\">";
+            echo "<textarea name=\"data\" cols=\"$editcols\" rows=\"$editrows\">";
             echo htmlspecialchars($data);
             echo "</textarea>";
             echo "</td>";
             echo "</tr>";
             echo "<tr>";
-            echo "<td align=left>";
-            echo "<input type=radio name=fileformat value=dos".(($defaultfileformat == "dos") ? " checked" : "").">".$messages["sav6"];
-            echo "<br><input type=radio name=fileformat value=unix".(($defaultfileformat == "unix") ? " checked" : "").">".$messages["sav7"];
+            echo "<td style=\"text-align: left;\">";
+            echo "<input type=\"radio\" name=\"fileformat\" value=\"dos\"".(($defaultfileformat == "dos") ? " checked=\"checked\"" : "")."/>".$messages["sav6"];
+            echo "<br><input type=\"radio\" name=\"fileformat\" value=\"unix\"".(($defaultfileformat == "unix") ? " checked=\"checked\"" : "")."/>".$messages["sav7"];
             echo "</td>";
-            echo "<td align=center>";
-            echo "<input type=submit value=\"".$messages["sav4"]."\">";
+            echo "<td style=\"text-align: center;\">";
+            echo "<input type=\"submit\" value=\"".$messages["sav4"]."\"/>";
             echo "</td>";
-            echo "<td align=right>";
-            echo "<input type=button value=\"".$messages["sav5"]."\" onClick='cancelEdit()'>";
+            echo "<td style=\"text-align: right;\">";
+            echo "<input type=\"button\" value=\"".$messages["sav5"]."\" onClick=\"cancelEdit();\">";
             echo "</td>";
             echo "</tr>";
             echo "</form>";
@@ -1388,9 +1344,9 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          } else {
             echo "<p><b>".$messages["edt9"]." : </b>".htmlspecialchars($file);
             echo "<p><table>";
-            echo "<tr><td width=700><pre>".htmlspecialchars($data)."</pre>&nbsp;</td></tr>";
+            echo "<tr><td style=\"width: 700px;\"><pre>".htmlspecialchars($data)."</pre>&nbsp;</td></tr>";
             echo "</table>";
-            echo "<p><a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=$sortby\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt12"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["edt12"]."</a>";
+            echo "<p><a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=$sortby\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt12"])."\");' onMouseOut=\"return statusMsg('');\">".$messages["edt12"]."</a>";
          }
       }
    } else {
@@ -1399,7 +1355,6 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
 // File list page
 } else {
    echo "\n<script text=\"text/javascript\">";
-   echo "\n<!--";
    echo "\nfunction submitListForm(action) {";
    echo    "\nf = document.listForm;";
    echo    "\nfilechecked = 0;";
@@ -1521,39 +1476,38 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
       echo "\n}";
    }
 
-   echo "\n//-->";
    echo "\n</script>\n";
 
    if (!empty($files)) {
       echo "<p><table>";
       echo "<form action=\"$thisscript\" method=\"post\" name=\"listForm\">";
-      echo "<input name=act type=hidden value=''>";
-      echo "<input name=subdir type=hidden value=\"$subdir\">";
-      echo "<input name=sortby type=hidden value=$sortby>";
+      echo "<input name=\"act\" type=\"hidden\" value=\"\"/>";
+      echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+      echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
       echo "<tr>";
-      echo "<td width=25 height=0 class=tdcc></td>";
-      echo "<td width=25 height=0 class=tdcc></td>";
-      echo "<td width=".(($showunixattrs) ? 250 : 300)." height=0 class=tdcc></td>";
-      echo "<td width=100 height=0 class=tdcc></td>";
-      echo "<td width=130 height=0 class=tdcc></td>";
+      echo "<td style=\"width: 25px; height: 0\" class=\"tdcc\"></td>";
+      echo "<td style=\"width: 25px; height: 0\" class=\"tdcc\"></td>";
+      echo "<td style=\"width: ".(($showunixattrs) ? 250 : 300)."px; height: 0;\" class=\"tdcc\"></td>";
+      echo "<td style=\"width: 100px; height: 0;\" class=\"tdcc\"></td>";
+      echo "<td style=\"width: 130px; height: 0;\" class=\"tdcc\"></td>";
 
       if ($showunixattrs) {
-         echo "<td width=100 height=0 class=tdcc></td>";
-         echo "<td width=75 height=0 class=tdcc></td>";
-         echo "<td width=75 height=0 class=tdcc></td>";
+         echo "<td style=\"width: 100px; height: 0;\" class=\"tdcc\"></td>";
+         echo "<td style=\"width: 75px; height: 0;\" class=\"tdcc\"></td>";
+         echo "<td style=\"width: 75px; height: 0;\" class=\"tdcc\"></td>";
 
          $nbcols = 9;
       } else {
-         echo "<td width=50 height=0 class=tdcc></td>";
+         echo "<td style=\"width: 50px; height: 0;\" class=tdcc></td>";
 
          $nbcols = 7;
       }
 
-      echo "<td width=50 height=0 class=tdcc></td>";
+      echo "<td style=\"width: 50 height: 0;\" class=tdcc></td>";
       echo "</tr>";
 
       if (($readmefile != "") && @is_readable(getFilePath($readmefile)) && ($act != "search")) {
-         echo "<tr><td colspan=$nbcols>";
+         echo "<tr><td colspan=\"$nbcols\">";
          include(getFilePath($readmefile));
          echo "</td></tr>";
       }
@@ -1562,13 +1516,13 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
       echo "<th>".$messages["tab1"]."</th>";
       echo "<th>".$messages["tab2"]."</th>";
       echo "<th>";
-      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=name".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf1"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab3"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=name".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver=\"return statusMsg('".quoteJS($messages["inf1"])."');\" onMouseOut=\"return statusMsg('');\">".$messages["tab3"]."</a>";
       echo "</th>";
       echo "<th>";
-      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=size".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf2"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab4"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=size".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver=\"return statusMsg('".quoteJS($messages["inf2"])."');\" onMouseOut=\"return statusMsg('');\">".$messages["tab4"]."</a>";
       echo "</th>";
       echo "<th>";
-      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=date".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver='return statusMsg(\"".quoteJS($messages["inf3"])."\");' onMouseOut='return statusMsg(\"\");'>".$messages["tab5"]."</a>";
+      echo "<a href=\"$thisscript?subdir=".rawurlencode($subdir)."&sortby=date".(($act == "search") ? "&act=search&searchpattern=".rawurlencode($searchpattern) : "")."\" onMouseOver=\"return statusMsg('".quoteJS($messages["inf3"])."');\" onMouseOut=\"return statusMsg('');\">".$messages["tab5"]."</a>";
       echo "</th>";
 
       if ($showunixattrs) {
@@ -1592,12 +1546,12 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             if (($subdir != "") || ($file["name"] != "..")) {
                echo "<tr>";
                if (($file["level"] == 9) && ($allowmove || $allowrename || $allowdelete)) {
-                  echo "<td><input type=checkbox name=\"selfiles[]\" value='".$file["name"]."'></td>";
+                  echo "<td><input type=\"checkbox\" name=\"selfiles[]\" value=\"".$file["name"]."\"/></td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
                if (($file["level"] != 1) && $allowmove && ($subdir != $trashcan)) {
-                  echo "<td><input type=radio name=dest value='".$file["name"]."'></td>";
+                  echo "<td><input type=\"radio\" name=\"dest\" value=\"".$file["name"]."\"/></td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }
@@ -1605,19 +1559,19 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
                if ($file["link"]) {
                   echo "<i><b>".htmlspecialchars($file["name"])."</b></i>";
                } else {
-                  echo "<a href=\"$thisscript?subdir=".rawurlencode(extractSubdir($file["path"]))."&sortby=$sortby\" onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
+                  echo "<a href=\"$thisscript?subdir=".rawurlencode(extractSubdir($file["path"]))."&sortby=$sortby\" onMouseOver=\"return statusMsg('".quoteJS($file["statusmsg"])."');\" onMouseOut=\"return statusMsg('');\">";
                   echo "<b>".$file["alias"]."</b>";
                   echo "</a>";
                }
                echo "</td>";
                echo "<td>&nbsp;</td>";
-               echo "<td align=right>".$file["date"]."</td>";
+               echo "<td style=\"text-align: right;\">".$file["date"]."</td>";
                if ($showunixattrs) {
-                  echo "<td align=center><span class=fix>".$file["perms"]."</span></td>";
-                  echo "<td align=right>".$file["owner"]."</td>";
-                  echo "<td align=right>".$file["group"]."</td>";
+                  echo "<td style=\"text-align: center;\"><span class=\"fix\">".$file["perms"]."</span></td>";
+                  echo "<td style=\"text-align: right;\">".$file["owner"]."</td>";
+                  echo "<td style=\"text-align: right;\">".$file["group"]."</td>";
                } else {
-                  echo "<td align=center>".(($file["readonly"]) ? $messages["tab14"] : "&nbsp;")."</td>";
+                  echo "<td style=\"text-align: center;\">".(($file["readonly"]) ? $messages["tab14"] : "&nbsp;")."</td>";
                }
                echo "<td>&nbsp;</td>";
                echo "</tr>";
@@ -1628,7 +1582,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          } else {
             echo "<tr>";
             if ($allowmove || $allowrename || $allowcopy || $allowdelete || ($subdir == $trashcan) || ($act == "search")) {
-               echo "<td><input type=checkbox name=\"selfiles[]\" value='".$file["name"]."'>&nbsp;</td>";
+               echo "<td><input type=\"checkbox\" name=\"selfiles[]\" value=\"".$file["name"]."\"/>&nbsp;</td>";
             } else {
                echo "<td>&nbsp;</td>";
             }
@@ -1640,31 +1594,31 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
                } else {
                   echo "<a href=\"".$basevirtualdir."/".rawurlencode($file["name"]);
                }
-               echo "\" onMouseOver='return statusMsg(\"".quoteJS($file["statusmsg"])."\");' onMouseOut='return statusMsg(\"\");'>";
+               echo "\" onMouseOver=\"return statusMsg('".quoteJS($file["statusmsg"])."');\" onMouseOut=\"return statusMsg('');\">";
                echo $file["alias"];
                echo "</a>";
             } else {
                echo htmlspecialchars($file["name"]);
             }
             echo (($file["link"]) ? "</i>" : "")."</td>";
-            echo "<td align=right>".$file["size"]."</td>";
-            echo "<td align=right>".$file["date"]."</td>";
+            echo "<td style=\"text-align: right;\">".$file["size"]."</td>";
+            echo "<td style=\"text-align: right;\">".$file["date"]."</td>";
             if ($showunixattrs) {
-               echo "<td align=center><span class=fix>".$file["perms"]."</span></td>";
-               echo "<td align=right>".$file["owner"]."</td>";
-               echo "<td align=right>".$file["group"]."</td>";
+               echo "<td style=\"text-align: center;\"><span class=\"fix\">".$file["perms"]."</span></td>";
+               echo "<td style=\"text-align: right;\">".$file["owner"]."</td>";
+               echo "<td style=\"text-align: right;\">".$file["group"]."</td>";
             } else {
-               echo "<td align=center>".(($file["readonly"]) ? $messages["tab14"] : "&nbsp;")."</td>";
+               echo "<td style=\"text-align: center;\">".(($file["readonly"]) ? $messages["tab14"] : "&nbsp;")."</td>";
             }
-            echo "<td align=center>&nbsp;";
+            echo "<td style=\"text-align: center;\">&nbsp;";
             if (($act != "search") && ($allowedit || $allowshow) && checkExtension($file["name"]) && ($subdir != $trashcan)) {
                if (!$file["readonly"] && $allowedit) {
-                  echo "<a href=\"$thisscript?act=edit&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt8"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$editimage\" border=0>" : $messages["edt10"])."</a> ";
+                  echo "<a href=\"$thisscript?act=edit&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt8"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$editimage\">" : $messages["edt10"])."</a> ";
                }
-               echo "<a href=\"$thisscript?act=show&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt9"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$viewimage\" border=0>" : $messages["edt11"])."</a> ";
+               echo "<a href=\"$thisscript?act=show&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".rawurlencode($file["name"])."\" onMouseOver='return statusMsg(\"".quoteJS($messages["edt9"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$viewimage\">" : $messages["edt11"])."</a> ";
             } 
             if (($allowdownload) && ($subdir != $trashcan)) {
-               echo "<a href=\"$thisscript?act=download&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])))."\" onMouseOver='return statusMsg(\"".quoteJS($messages["dwn5"])."\");' onMouseOut='return statusMsg(\"\");'>".(($useimages) ? "<img src=\"$imagesdir/$downloadimage\" border=0>" : $messages["dwn1"])."</a> ";
+               echo "<a href=\"$thisscript?act=download&subdir=".rawurlencode($subdir)."&sortby=$sortby&file=".str_replace("%2F", "/", rawurlencode(extractSubdir($file["path"])))."\" onMouseOver=\"return statusMsg('".quoteJS($messages["dwn5"])."');\" onMouseOut=\"return statusMsg('');\">".(($useimages) ? "<img src=\"$imagesdir/$downloadimage\">" : $messages["dwn1"])."</a> ";
             }
             echo "</td>";
             echo "</tr>";
@@ -1674,23 +1628,23 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          }
       }
       if (($act != "search") && ($nbfiles > 0) && ($allowmove || $allowdelete)) {
-         echo "<th align=left><input type=checkbox name=selectall onClick=\"selectAll()\"></th>";
+         echo "<th style=\"text-align: left;\"><input type=\"checkbox\" name=\"selectall\" onClick=\"selectAll();\"></th>";
          $n = $nbcols - 1;
       } else {
          $n = $nbcols;
       }
-      echo "<th colspan=$n>$nbdirs ".$messages["tab11"].", $nbfiles ".$messages["tab12"]." (".round($total/1024)." ".$messages["tab13"].")</th>";
+      echo "<th colspan=\"$n\">$nbdirs ".$messages["tab11"].", $nbfiles ".$messages["tab12"]." (".round($total/1024)." ".$messages["tab13"].")</th>";
       echo "</tr>";
-      echo "<tr><td class=tdrt colspan=$nbcols>&nbsp;</td></tr>";
+      echo "<tr><td class=\"tdrt\" colspan=\"$nbcols\">&nbsp;</td></tr>";
 
       // Action forms
       if ($allowsearch && ($act == "search")) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["sch8"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["sch9"]."\" onClick='submitListForm(\"goto\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["sch9"]."\" onClick=\"submitListForm('goto');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1703,8 +1657,8 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          echo "<td class=tdrt colspan=3>";
          echo $messages["mov9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["mov0"]."\" onClick='submitListForm(\"move\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["mov0"]."\" onClick=\"submitListForm('move');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1713,11 +1667,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir != $trashcan) 
           && ($nbfiles > 0) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["del9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["del0"]."\" onClick='submitListForm(\"delete\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["del0"]."\" onClick=\"submitListForm('delete');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1727,11 +1681,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($nbdirs > 0) 
           && @is_dir($basedir."/".$trashcan) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["rmd9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["rmd0"]."\" onClick='submitListForm(\"rmdir\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["rmd0"]."\" onClick=\"submitListForm('rmdir');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1740,12 +1694,12 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir != $trashcan)
           && (($nbfiles > 0) || ($nbdirs > 0)) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["ren9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=text name=renameto size=15> ";
-         echo "<input type=button value=\"".$messages["ren0"]."\" onClick='submitListForm(\"rename\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"text\" name=renameto size=15> ";
+         echo "<input type=\"button\" value=\"".$messages["ren0"]."\" onClick=\"submitListForm('rename');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1754,12 +1708,12 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir != $trashcan)
           && ($nbfiles > 0) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["cpy9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=text name=copyto size=15> ";
-         echo "<input type=button value=\"".$messages["cpy0"]."\" onClick='submitListForm(\"copy\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"text\" name=\"copyto\" size=\"15\"/> ";
+         echo "<input type=\"button\" value=\"".$messages["cpy0"]."\" onClick=\"submitListForm('copy');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1768,12 +1722,12 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir != $trashcan)
           && ($nbfiles > 0) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["als9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=text name=aliasto size=15> ";
-         echo "<input type=button value=\"".$messages["als0"]."\" onClick='submitListForm(\"alias\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"text\" name=\"aliasto\" size=\"15\"> ";
+         echo "<input type=\"button\" value=\"".$messages["als0"]."\" onClick=\"submitListForm('alias');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1782,11 +1736,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir == $trashcan)
           && ($nbfiles > 0) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["rst9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["rst0"]."\" onClick='submitListForm(\"restore\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["rst0"]."\" onClick=\"submitListForm('restore');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1795,11 +1749,11 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
           && ($subdir == $trashcan)
           && ($nbfiles > 0) ) {
          echo "<tr>";
-         echo "<td class=tdrt colspan=3>";
+         echo "<td class=\"tdrt\" colspan=\"3\">";
          echo $messages["trc9"]." :&nbsp;";
          echo "</td>";
-         echo "<td class=tdlt colspan=".($nbcols - 3).">";
-         echo "<input type=button value=\"".$messages["trc0"]."\" onClick='submitListForm(\"empty\")'>";
+         echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+         echo "<input type=\"button\" value=\"".$messages["trc0"]."\" onClick=\"submitListForm('empty');\"/>";
          echo "</td>";
          echo "</tr>";
       }
@@ -1810,16 +1764,16 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          if (   ($act != "search")
              && $allowcreatedir ) {
             echo "<form action=\"$thisscript\" method=\"post\" name=\"createDirForm\">";
-            echo "<input name=act type=hidden value=mkdir>";
-            echo "<input name=subdir type=hidden value=\"$subdir\">";
-            echo "<input name=sortby type=hidden value=$sortby>";
+            echo "<input name=\"act\" type=\"hidden\" value=\"mkdir\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
-            echo "<td class=tdrt colspan=3>";
+            echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["mkd9"]." :&nbsp;";
             echo "</td>";
-            echo "<td class=tdlt colspan=".($nbcols - 3).">";
-            echo "<input name=file type=text size=15> ";
-            echo "<input type=button value=\"".$messages["mkd0"]."\" onClick='submitActForm(document.createDirForm, \"file\", \"".quoteJS($messages["mkd4"])."\")'>";
+            echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<input name=\"file\" type=\"text\" size=\"15\"> ";
+            echo "<input type=\"button\" value=\"".$messages["mkd0"]."\" onClick=\"submitActForm(document.createDirForm, 'file', '".quoteJS($messages["mkd4"])."');\"/>";
             echo "</td>";
             echo "</tr>";
             echo "</form>";
@@ -1827,16 +1781,16 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          if (   ($act != "search")
              && $allowcreatefile ) {
             echo "<form action=\"$thisscript\" method=\"post\" name=\"createFileForm\">";
-            echo "<input name=act type=hidden value=create>";
-            echo "<input name=subdir type=hidden value=\"$subdir\">";
-            echo "<input name=sortby type=hidden value=$sortby>";
+            echo "<input name=\"act\" type=\"hidden\" value=\"create\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
-            echo "<td class=tdrt colspan=3>";
+            echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["cre9"]." :&nbsp;";
             echo "</td>";
-            echo "<td class=tdlt colspan=".($nbcols - 3).">";
-            echo "<input name=file type=text size=15> ";
-            echo "<input type=button value=\"".$messages["cre0"]."\" onClick='submitActForm(document.createFileForm, \"file\", \"".quoteJS($messages["cre4"])."\")'>";
+            echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<input name=\"file\" type=\"text\" size=\"15\"/> ";
+            echo "<input type=\"button\" value=\"".$messages["cre0"]."\" onClick=\"submitActForm(document.createFileForm, 'file', '".quoteJS($messages["cre4"])."');\"/>";
             echo "</td>";
             echo "</tr>";
             echo "</form>";
@@ -1844,17 +1798,17 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          if (   ($act != "search")
              && $allowupload ) {
             echo "<form action=\"$thisscript\" method=\"post\" enctype=\"multipart/form-data\" name=\"uploadFileForm\">";
-            echo "<input name=act type=hidden value=upload>";
-            echo "<input name=subdir type=hidden value=\"$subdir\">";
-            echo "<input name=sortby type=hidden value=$sortby>";
-            echo "<input name=max_file_size type=hidden value=$uploadmaxsize>";
+            echo "<input name=\"act\" type=\"hidden\" value=\"upload\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
+            echo "<input name=\"max_file_size\" type=\"hidden\" value=$uploadmaxsize/>";
             echo "<tr>";
-            echo "<td class=tdrt colspan=3>";
+            echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["fup9"]." :&nbsp;";
             echo "</td>";
-            echo "<td class=tdlt colspan=".($nbcols - 3).">";
-            echo "<input name=file type=file size=15> ";
-            echo "<input type=button value=\"".$messages["fup0"]."\" onClick='submitActForm(document.uploadFileForm, \"file\", \"".quoteJS($messages["fup4"])."\")'>";
+            echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<input name=\"file\" type=\"file\" size=\"15\"/> ";
+            echo "<input type=\"button\" value=\"".$messages["fup0"]."\" onClick=\"submitActForm(document.uploadFileForm, 'file', '".quoteJS($messages["fup4"])."');\"/>";
             echo "</td>";
             echo "</tr>";
             echo "</form>";
@@ -1862,16 +1816,16 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
          if (   ($act != "search")
              && $allowurlupload) {
             echo "<form action=\"$thisscript\" method=\"post\" name=\"uploadUrlForm\">";
-            echo "<input name=act type=hidden value=urlupload>";
-            echo "<input name=subdir type=hidden value=\"$subdir\">";
-            echo "<input name=sortby type=hidden value=$sortby>";
+            echo "<input name=\"act\" type=\"hidden\" value=\"urlupload\"/>";
+            echo "<input name=\"subdir\" type=\"hidden\" value=\"$subdir\"/>";
+            echo "<input name=\"sortby\" type=\"hidden\" value=\"$sortby\"/>";
             echo "<tr>";
-            echo "<td class=tdrt colspan=3>";
+            echo "<td class=\"tdrt\" colspan=\"3\">";
             echo $messages["uup9"]." :&nbsp;";
             echo "</td>";
-            echo "<td class=tdlt colspan=".($nbcols - 3).">";
-            echo "<input name=file type=text size=15 value='http://'> ";
-            echo "<input type=button value=\"".$messages["uup0"]."\" onClick='submitActForm(document.uploadUrlForm, \"file\", \"".quoteJS($messages["uup4"])."\")'>";
+            echo "<td class=\"tdlt\" colspan=\"".($nbcols - 3)."\">";
+            echo "<input name=\"file\" type=\"text\" size=\"15\" value=\"http://\"/> ";
+            echo "<input type=\"button\" value=\"".$messages["uup0"]."\" onClick=\"submitActForm(document.uploadUrlForm, 'file', '".quoteJS($messages["uup4"])."');\"/>";
             echo "</td>";
             echo "</tr>";
             echo "</form>";
