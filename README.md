@@ -8,7 +8,7 @@ Web File Browser is a simple open-source file browser written in PHP (1 single f
 that allows users to create, delete, edit, copy, rename, move and upload files and
 directories thru a light, full-text, web-based interface.
 
-![Web File Browser](snaphost.jpg)
+![Web File Browser](https://raw.github.com/cgdave/webfilebrowser/master/snaphost.jpg)
 
 Installation
 ------------
