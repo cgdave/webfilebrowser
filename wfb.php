@@ -348,7 +348,7 @@ $messages = array(
    "tab6"=>"Perms",
    "tab7"=>"Owner",
    "tab8"=>"Group",
-   "tab9"=>"Read<br>Only",
+   "tab9"=>"Read<br/>Only",
    "tab10"=>"Action",
    "tab11"=>"directories",
    "tab12"=>"files",
@@ -701,14 +701,12 @@ if ($act != "download") {
 
 // Built-in authentication check
 if ($authmethod == "session") {
-   session_start();
-
-   if (!session_is_registered("WFBUSER")) {
+	   session_start();
+   if (!isset($_SESSION["WFBUSER"])) {
       if (  isset($_POST["username"])
          && isset($_POST["password"])
          && isset($user[$_POST["username"]])
          && ($_POST["password"] == $user[$_POST["username"]]["password"])) {
-         session_register("WFBUSER");
          $_SESSION["WFBUSER"] = $_POST["username"];
          header("Location: $thisscript");
          exit;
@@ -728,7 +726,7 @@ if ($authmethod == "session") {
       }
    } else {
       if ($act == "logout") {
-	 session_unregister("WFBUSER");
+         unset($_SESSION["WFBUSER"]);
          header("Location: $thisscript");
          exit;
       } else {
@@ -1258,9 +1256,13 @@ if ($subdir == "") {
 }
 if ($act == "search") echo ")";
 
-echo "</b><br>".date($dateformat);
-if ($authmethod == "session") {
-   echo " (<a href=\"$thisscript?act=logout\">".$messages["rlm6"]."</a>)";
+echo "</b><br/>".date($dateformat);
+if ($authmethod == "session" || $authmethod == "realm") {
+   echo " ($username";
+   if ($authmethod == "session") {
+      echo " <a href=\"$thisscript?act=logout\">".$messages["rlm6"]."</a>";
+   }
+   echo ")";
 }
 echo "</td>";
 
@@ -1273,7 +1275,7 @@ if ($allowsearch && ($subdir != $trashcan) && (($act == "") || ($act == "search"
    echo "<input name=\"searchpattern\" type=\"text\" size=\"15\" value=\"$searchpattern\"/> ";
    echo "<input type=\"button\" value=\"".$messages["sch2"]."\" onClick=\"submitActForm(document.searchForm, 'searchpattern', '".quoteJS($messages["sch6"])."')\"/>";
    if ($allowregexpsearch) {
-      echo "<br><input type=\"checkbox\" value=\"true\" name=\"regexpsearch\"".(($regexpsearch) ? " checked=\"checked\"" : "")."/> ".$messages["sch7"];
+      echo "<br/><input type=\"checkbox\" value=\"true\" name=\"regexpsearch\"".(($regexpsearch) ? " checked=\"checked\"" : "")."/> ".$messages["sch7"];
    }
    echo "</td>";
 }
@@ -1331,7 +1333,7 @@ if (($allowedit && ($act == "edit")) || ($allowshow && ($act == "show")) && ($su
             echo "<tr>";
             echo "<td style=\"text-align: left;\">";
             echo "<input type=\"radio\" name=\"fileformat\" value=\"dos\"".(($defaultfileformat == "dos") ? " checked=\"checked\"" : "")."/>".$messages["sav6"];
-            echo "<br><input type=\"radio\" name=\"fileformat\" value=\"unix\"".(($defaultfileformat == "unix") ? " checked=\"checked\"" : "")."/>".$messages["sav7"];
+            echo "<br/><input type=\"radio\" name=\"fileformat\" value=\"unix\"".(($defaultfileformat == "unix") ? " checked=\"checked\"" : "")."/>".$messages["sav7"];
             echo "</td>";
             echo "<td style=\"text-align: center;\">";
             echo "<input type=\"submit\" value=\"".$messages["sav4"]."\"/>";
