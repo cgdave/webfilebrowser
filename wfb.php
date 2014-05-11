@@ -2,51 +2,12 @@
 //======================================================================
 //
 // Name: Web File Browser
-//
 // Description: A web file browser written in PHP
-//
-// History:	02/20/2002 - Alpha version 0.1a
-//			02/23/2002 - Alpha version 0.2a
-//			02/25/2002 - Alpha version 0.3a
-//			02/26/2002 - Beta version 0.4b1
-//			03/02/2002 - Beta version 0.4b2
-//			03/04/2002 - Beta version 0.4b3
-//			03/05/2002 - Beta version 0.4b3
-//			03/13/2002 - Beta version 0.4b5
-//			04/05/2002 - Beta version 0.4b6
-//			05/22/2002 - Beta version 0.4b7
-//			05/23/2002 - Beta version 0.4b8
-//			05/24/2002 - Beta version 0.4b9
-//			06/14/2002 - Beta version 0.4b10
-//			06/26/2002 - Beta version 0.4b11
-//			07/04/2002 - Beta version 0.4b12
-//			08/02/2002 - Beta version 0.4b13
-//			09/02/2002 - Beta version 0.4b14
-//			05/09/2014 - Beta version 0.4b15 (at last ;-)
-//
-// Credits:	Thanks to Albert LOMBARTE for the spanish and catalan version
-//			Thanks to Johannes EDER for the german version
-//			Thanks to Mikael WANBERG for the swedish version
-//			Thanks to Dmytro KOVALOV for the ukrainian version
-//			Thanks to Larry CHAFFIN for some ideas
-//			Thanks to Luk VANLANDUYT for the dutch version
-//			Thanks to Paul LOE for the norwegian version
-//			Thanks to Randall COHEN for the corrections of the english version
-//			Thanks to Jean-Jacques LE MOUEL for his bug slaughter
-//			Thanks to Petteri HIETAVIRTA for the Finish version
-//			Thanks to Tayfun BILSEL for the Turkish version
-//			Thanks to Balaskas EUAGGELOS for the Greek version
-//			Thanks to Slawomir BROWKIN for the Polish version
-//
-// TODO:	Zip and unzip files and directories
-//			Multiple file upload
-//
-// Legal stuff : 
-//
-// This program is free software; you can redistribute it and/or
+// Version: 0.4 beta 15
+// 
+// License: This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation
-// 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
