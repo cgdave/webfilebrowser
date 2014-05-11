@@ -1,4 +1,4 @@
-﻿// French parameters (David AZOULAY)
+﻿// French (David AZOULAY)
 
 $dateformat = "d/m/Y H:i:s";
 

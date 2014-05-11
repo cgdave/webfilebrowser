@@ -1,5 +1,4 @@
-﻿// ---- Local settings -----------------------------------------------------
-// Finnish parameters (Petteri HIETAVIRTA)
+﻿// Finnish (Petteri HIETAVIRTA)
 
 $dateformat = "d.m.Y H:i:s";
 

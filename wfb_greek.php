@@ -1,23 +1,7 @@
-﻿<?
-// Balaskas Euaggelos
-// ebalaskas@cs.teiath.gr
-// 17-05-2003
+﻿// Greek (Balaskas Euaggelos / ebalaskas@cs.teiath.gr)
 
-// Date format
-$dateformat = "d-m-Y H:i:s";       // Date format. Here are some other examples (that you can combine) :
-                                   // "M D, Y"   = Dec Fri, 2002
-                                   // "m/d/y"    = 12/20/02
-                                   // "m-d-y"    = 12-20-02
-                                   // "l M d, Y" = Friday Dec 20, 2002
-                                   // "F dS, Y"  = December 20th, 2002
-                                   // "H:i:s"    = 24 hour time with seconds
-                                   // "h:i a"    = 12 hour time with am,pm
-                                   // etc...
+$dateformat = "d-m-Y H:i:s";
 
-// Messages
-//  If you want another language just replace this array by the one
-//  in your favorite language file (an include file is not done to keep
-//  the whole code in 1 single file)
 $messages = array(
    "rlm1"=>"Χρειάζεται πιστοποίηση",
    "trc0"=>"Κενό",
@@ -172,5 +156,3 @@ $messages = array(
    "inf7"=>"Πήγαινε στον γονικό κατάλογο",
    "inf8"=>"Πήγαινε στον Κάδο Ανακύκλωσης"
 );
-// ---------------------------------------------------------------------
-?>

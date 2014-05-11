@@ -1,5 +1,4 @@
-﻿<?php
-// Polish parameters (Sławomir BROWKIM)
+﻿// Polish (Sławomir BROWKIM)
 
 $dateformat = "d-m-Y H:i:s";
 
@@ -156,4 +155,4 @@ $messages = array(
    "inf6"=>"Idż do głównego folderu",
    "inf7"=>"Idź w górę",
    "inf8"=>"Idź do Kosza"
-);?>
+);
