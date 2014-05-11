@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Web File Browser by cgdave</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Web File Browser</h1>
+        <h2>Web File Browser</h2>
+        <a href="https://github.com/cgdave/webfilebrowser" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="web-file-browser" class="anchor" href="#web-file-browser"><span class="octicon octicon-link"></span></a>Web File Browser</h1>
+
+<h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Web File Browser is a simple open-source file browser written in PHP (1 single file)
+that allows users to create, delete, edit, copy, rename, move and upload files and
+directories thru a light, full-text, web-based interface.</p>
+
+<p><img src="https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg" alt="Web File Browser"></p>
+
+<p>Up-to-date version is available at <a href="https://github.com/cgdave/webfilebrowser">GitHub</a>.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Copy the <code>wfb.php</code> file (and optionaly the two directories <code>wfbimages</code> and <code>wfbtrash</code>) to your target
+directory in your web server's document root.</p>
+
+<p>Start your favorite Web Browser and point to <code>http://yourserver.yourdomain/yourdirectory/wfb.php</code>.</p>
+
+<p>You can also change the name of <code>wfb.php</code> to <code>index.php</code>so as it is considered as the index file of your directory
+(whichever his name this file wont appear).</p>
+
+<p>You may also want to put some user information in the <code>wfbreadme.html</code>.</p>
+
+<h2>
+<a name="customization" class="anchor" href="#customization"><span class="octicon octicon-link"></span></a>Customization</h2>
+
+<p>Web File Browser allows you to customize some features such as:</p>
+
+<ul>
+<li>Use optional icons or only text</li>
+<li>Title, colors, sizes, ...</li>
+<li>Enable/disable links on files</li>
+<li>Enable/disable file uploads</li>
+<li>Customize list of extensions that allow files to be edited</li>
+<li>...</li>
+</ul><p>Look at the source for optional customization.</p>
+
+<h2>
+<a name="security" class="anchor" href="#security"><span class="octicon octicon-link"></span></a>Security</h2>
+
+<p>Web File Browser includes a builtin authentication (look at the source).</p>
+
+<p>You can also rely on your web server for authentication. </p>
+
+<p>For instance with Apache you can setup a <code>.htaccess</code> file like this:</p>
+
+<pre lang="plain"><code>&lt;Files "wfb.php"&gt;
+   AuthType Basic
+   AuthUserFile ".htpasswd"
+   AuthName "webFileBrowser"
+   Require valid-user
+&lt;/Files&gt;
+</code></pre>
+
+<h2>
+<a name="faq" class="anchor" href="#faq"><span class="octicon octicon-link"></span></a>FAQ</h2>
+
+<h3>
+<a name="file-upload-does-not-work-whats-wrong-" class="anchor" href="#file-upload-does-not-work-whats-wrong-"><span class="octicon octicon-link"></span></a>File upload does not work, what's wrong ?</h3>
+
+<p>There are two main reasons for that : </p>
+
+<ul>
+<li>First, check your <code>php.ini</code> : </li>
+</ul><pre><code>file_uploads = On 
+upload_max_filesize = 2M 
+</code></pre>
+
+<p>and verify that the value in <code>$uploadmaxsize</code> variable is the same as this value
+(for istance <code>2M</code> means 2 megabytes = 2097152 bytes) </p>
+
+<ul>
+<li>Second, if you run your PHP-enabled web server under Linux/Unix, uploaded files (and created files/directories)
+are created under the ownership of the Unix user that runs your webserver. 
+As the PHP function <code>chown()</code> does not work unless this user is root (which is obviously a bad idea)
+it is not possible to chown files to another user after creation. </li>
+</ul><p>A simple workaround is to <code>chown</code>/<code>chgrp</code> your directories to the web browser <code>user</code>/<code>group</code>, </p>
+
+<p>Another workaround is to add the webbrowser group to the secondary groups of the user owner of the directories (that's what I do).
+In that case remember to set <code>$filemode</code> to <code>0664</code> and $dirmode to <code>0775</code>. </p>
+
+<h3>
+<a name="url-upload-does-not-work-whats-wrong-" class="anchor" href="#url-upload-does-not-work-whats-wrong-"><span class="octicon octicon-link"></span></a>URL upload does not work, what's wrong ?</h3>
+
+<p>Check your <code>php.ini</code> : </p>
+
+<pre><code>allow_url_fopen = On
+</code></pre>
+
+<p>and keep in mind that only URL explicitely pointing to a file (such as <code>http://myserver/myfile.txt</code>) can be URL-uploaded. </p>
+
+<h3>
+<a name="how-do-i-hide-files-" class="anchor" href="#how-do-i-hide-files-"><span class="octicon octicon-link"></span></a>How do I hide files ?</h3>
+
+<p>Customize <code>$hidefilepattern</code> so as it contains a regular expression matching the name of the files you want to hide. 
+An example is given is the source to hide dot files. </p>
+
+<h3>
+<a name="why-delete-action-does-not-appear-" class="anchor" href="#why-delete-action-does-not-appear-"><span class="octicon octicon-link"></span></a>Why delete action does not appear ?</h3>
+
+<p>When you delete a file Web File Browser just move it into the trash can directory. This directory (located in the base directory)
+must exists and be writeable, if not the delete button is inhibited. </p>
+
+<p>You can customize its name using <code>$trashcan</code>. </p>
+
+<h3>
+<a name="which-web-browsers-are-supported-" class="anchor" href="#which-web-browsers-are-supported-"><span class="octicon octicon-link"></span></a>Which web browsers are supported ?</h3>
+
+<p>Web File Browser has been tested on most browsers fro the last 10 years, it should work on yours ;-)</p>
+
+<h2>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>TODO</h2>
+
+<p>Some features that might be developed one day:</p>
+
+<ul>
+<li>Handling of multiple uploads</li>
+<li>Zip/Unzip files and directories</li>
+<li>Reorganization of the code and added comments</li>
+</ul><h2>
+<a name="internationalization" class="anchor" href="#internationalization"><span class="octicon octicon-link"></span></a>Internationalization</h2>
+
+<p>Thanks to contributors, these language are supported:</p>
+
+<ul>
+<li>English (corrected by Randall COHEN)</li>
+<li>French</li>
+<li>Spanish and Catalan thanks to Albert LOMBARTE</li>
+<li>German thanks to Johannes EDER</li>
+<li>Swedish thanks to Mikael WANBERG</li>
+<li>Ukranian thanks to Dmytro KOVALOV</li>
+<li>Dutch thanks to Luk VANLANDUYT</li>
+<li>Norwegian thanks to Paul LOE</li>
+<li>Finnish thanks to Petteri HIETAVIRTA</li>
+<li>Turkish thanks to Tayfun BILSEL</li>
+<li>Greek thanks to Balaskas EUAGGELOS</li>
+<li>Polish thanks to Slawomir BROWKIN</li>
+</ul><h2>
+<a name="history" class="anchor" href="#history"><span class="octicon octicon-link"></span></a>History</h2>
+
+<ul>
+<li>Versions 0.1a, 0.2a and 0.3a were alpha versions not worth publishing...</li>
+<li>Version 0.4b1 was first beta version.</li>
+<li>Versions 0.4b2 and 0.4b3 fixed few bugs and added few sub-features</li>
+<li>Versions 0.4b4, 0.4b5, 0.4b6 fixed few bugs and added trash can management</li>
+<li>Version 0.4b7 added direct links to main directory and trash can and README file management</li>
+<li>Version 0.4b8 fixed a few bugs, added file restore feature in trash can and added URL upload feature</li>
+<li>Version 0.4b9 fixed a few bugs and added file aliasing feature</li>
+<li>Version 0.4b10 added multilingual support</li>
+<li>Version 0.4b11 fixed a few bugs regarding PHP warnings</li>
+<li>Version 0.4b12 fixed issue with "register_globals", added search (thanks to Larry CHAFFIN for the idea) and download features, added images (thaks again Larry), added optionnal images, fixed few bugs</li>
+<li>Version 0.4b13 reorganized PHP and generated HTML/Javascript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) </li>
+<li>Version 0.4b14 added profile management and other authentication methods, fixed some subtile bugs (thanks to Jean-Jacques LE MOUEL) </li>
+<li>Version 0.4b15 migrated to GitHub, started modernization</li>
+</ul><h2>
+<a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
+
+<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+See the GNU General Public License for more details. </p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This program is free software; you can redistribute it and/or modify it under the terms of 
+the GNU General Public License as published by the Free Software Foundation</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/cgdave/webfilebrowser/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/cgdave/webfilebrowser/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/cgdave/webfilebrowser"></a> is maintained by <a href="https://github.com/cgdave">cgdave</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("webfilebrowser");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
