@@ -2,8 +2,6 @@
 
 $dateformat = "d-m-Y H:i:s";
 
-$charset = "iso-8859-1";
-
 $messages = array(
    "rlm1"=>"Es requereix autentificació",
    "trc0"=>"Buidar",
