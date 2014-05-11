@@ -1,9 +1,7 @@
-// ---- Local settings -----------------------------------------------------
+﻿// ---- Local settings -----------------------------------------------------
 // Finnish parameters (Petteri HIETAVIRTA)
 
 $dateformat = "d.m.Y H:i:s";
-
-$charset = "iso-8859-1";
 
 $messages = array(
    "rlm1"=>"Sis&auml;&auml;nkirjautuminen vaaditaan",
