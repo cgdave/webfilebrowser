@@ -10,6 +10,8 @@ directories thru a light, full-text, web-based interface.
 
 ![Web File Browser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg)
 
+Up-to-date version is available at [GitHub](https://github.com/cgdave/webfilebrowser).
+
 Installation
 ------------
 
