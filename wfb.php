@@ -170,6 +170,9 @@ $basevirtualdir = "";              // If you have set a custom $basedir AND $fil
 
 // ---- Local settings -----------------------------------------------------
 
+// Charset
+$charset = "utf-8";
+
 // Date format
 $dateformat = "m-d-Y H:i:s";       // Date format. Here are some other examples (that you can combine) :
                                    // "M D, Y"   = Dec Fri, 2002
@@ -180,9 +183,6 @@ $dateformat = "m-d-Y H:i:s";       // Date format. Here are some other examples 
                                    // "H:i:s"    = 24 hour time with seconds
                                    // "h:i a"    = 12 hour time with am,pm
                                    // etc...
-
-// Charset
-$charset = "utf-8";
 
 // Messages
 //  If you want another language just replace this array by the one
