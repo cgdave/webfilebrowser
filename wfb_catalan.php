@@ -1,4 +1,4 @@
-﻿// Catalan parameters (Albert LOMBARTE)
+﻿// Catalan (Albert LOMBARTE)
 
 $dateformat = "d-m-Y H:i:s";
 
