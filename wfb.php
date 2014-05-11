@@ -447,20 +447,18 @@ function getFilePerms($p) {
 function checkFileName($f) {
 	global $subdir, $thisfile, $hidedotfiles, $hidefilepattern, $trashcan, $trashcaninfofileext, $showimagesdir, $imagesdir, $readmefile, $showreadmefile, $filealiases, $filealiasext;
 
-	if (!isset($f) || $f == "") return false;
+	if (!isset($f) || $f == "" || preg_match("/\.\.\//", $f)) return false;
 	$f = @basename($f);
 	
 	return !(
-		   (($subdir == "") && (strtolower($f) == $thisfile))
-		|| (strpos($f, "..") === 0)
-		|| (strpos($f, "./") === 0)
-		|| (($subdir == "") && ($f == $trashcan))
-		|| (!$showimagesdir && ((($subdir == "") && ($f == $imagesdir)) || ($subdir == $imagesdir)))
+		   ($subdir == "" && strtolower($f) == $thisfile)
+		|| ($subdir == "" && $f == $trashcan)
+		|| (!$showimagesdir && (($subdir == "" && $f == $imagesdir) || $subdir == $imagesdir))
 		|| ($hidedotfiles && ($f[0] == '.'))
-		|| (($hidefilepattern != "") && ereg($hidefilepattern, $f))
+		|| ($hidefilepattern != "" && ereg($hidefilepattern, $f))
 		|| ($filealiases && ereg("^.*\.".strtolower($filealiasext)."$", strtolower($f)))
-		|| (!$showreadmefile && ($f == $readmefile))
-		|| (($subdir == $trashcan) && (($f == $readmefile) || ereg(".*\.".strtolower($trashcaninfofileext)."$", strtolower($f))))
+		|| (!$showreadmefile && $f == $readmefile)
+		|| ($subdir == $trashcan && ($f == $readmefile || ereg(".*\.".strtolower($trashcaninfofileext)."$", strtolower($f))))
 	);
 }
 
