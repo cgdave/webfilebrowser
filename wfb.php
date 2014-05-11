@@ -182,7 +182,7 @@ $dateformat = "m-d-Y H:i:s";       // Date format. Here are some other examples 
                                    // etc...
 
 // Charset
-$charset = "iso-8859-1";
+$charset = "utf-8";
 
 // Messages
 //  If you want another language just replace this array by the one
