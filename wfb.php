@@ -533,9 +533,7 @@ function redirectWithMsg($class, $msgcode, $msgparam1 = "", $msgparam2 = "", $ex
 function pageHeader() {
 	global $hiddeninfo, $title, $windowtitle, $thbgcolor, $thfgcolor, $tdbgcolor, $tdfgcolor, $bodybgcolor, $bodyfgcolor, $infocolor, $warningcolor, $errorcolor, $linkcolor, $actlinkcolor, $msg, $charset, $defaultstatusmsg;
 
-	if ($hiddeninfo != "")
-		echo "\n<!--\nINFO :$hiddeninfo\n-->\n";
-	echo "\n<!DOCTYPE html>";
+	echo "<!DOCTYPE html>";
 	echo "\n<html>";
 	echo "\n<head>";
 	echo "\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$charset\">";
@@ -571,6 +569,7 @@ function pageHeader() {
 	echo "\n}";
 	echo "\n</script>";
 	echo "\n</head>";
+	if ($hiddeninfo != "") echo "\n<!--\nINFO :$hiddeninfo\n-->\n";
 	echo "\n<body onLoad='return statusMsg(\"\")'>\n";
 	echo "<h1>$title</h1>";
 
