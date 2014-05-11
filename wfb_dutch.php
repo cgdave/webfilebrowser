@@ -1,8 +1,6 @@
-// Dutch parameters (Luk VANLANDUYT)
+ï»¿// Dutch parameters (Luk VANLANDUYT)
 
 $dateformat = "m-d-Y H:i:s";
-
-$charset = "iso-8859-1";
 
 $messages = array(
    "rlm1"=>"Authentificatie vereist",
@@ -38,7 +36,7 @@ $messages = array(
    "cpy2"=>"Ongeldige bestandsnaam",
    "cpy3"=>"Bestand %VAR1% gekopieerd tot %VAR2%",
    "cpy4"=>"Kan bestand %VAR1% niet kopieren tot %VAR2%",
-   "cpy5"=>"Kan mappen niet kopiëren",
+   "cpy5"=>"Kan mappen niet kopiÃ«ren",
    "cpy6"=>"Geen naam of ongeldige naam opgegeven",
    "cpy9"=>"Kopieer <b>gekozen</b> bestand tot",
    "als0"=>"Alias",
@@ -123,7 +121,7 @@ $messages = array(
    "act3"=>"Geen bestand of doelmap geselecteerd",
    "act4"=>"Geen bestand geselecteerd",
    "act5"=>"Geen naam voorzien voor het te hernoemen bestand",
-   "act6"=>"Geen naam voorzien voor het te kopiëren bestand",
+   "act6"=>"Geen naam voorzien voor het te kopiÃ«ren bestand",
    "act7"=>"Teveel bestanden of mappen geselecteerd",
    "act8"=>"Selecteer enkel bestanden",
    "act9"=>"Selecteer een map",
