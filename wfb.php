@@ -53,16 +53,16 @@ $showreadmefile = false;           // Allows README file to be in file list
 $useimages = false;                // Use images, set to false by default to respect the philosophy
 $imagesdir = "wfbimages";          // Images directory (must be located in base directory)
 $showimagesdir = false;            // Show images directory
-$trashcanimage = "trashcan.gif";   // Image for trash can
-$upperdirimage = "upperdir.gif";   // Image for upper and main directory
-$opendirimage = "opendir.gif";     // Image for open directory
-$dirimage = "dir.gif";             // Image for simple directory
-$fileimage = "file.gif";           // Image for file directory
-$editimage = "edit.gif";           // Image for edit action
-$viewimage = "view.gif";           // Image for view action
+$trashcanimage = "trashcan.png";   // Image for trash can
+$upperdirimage = "upperdir.png";   // Image for upper and main directory
+$opendirimage = "opendir.png";     // Image for open directory
+$dirimage = "dir.png";             // Image for simple directory
+$fileimage = "file.png";           // Image for file directory
+$editimage = "edit.png";           // Image for edit action
+$viewimage = "view.png";           // Image for view action
 
 $searchmaxlevels = 10;             // Search levels (max depth in sub directories for searches, 0 means no limits)
-$downloadimage = "download.gif";   // Image for download action
+$downloadimage = "download.png";   // Image for download action
 
 $editcols = 80;                    // Number of columns for edit area
 $editrows = 24;                    // Number of rows for edit area
