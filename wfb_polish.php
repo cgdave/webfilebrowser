@@ -1,4 +1,4 @@
-﻿// Polish (Sławomir BROWKIM)
+// Polish (Sławomir BROWKIM)
 
 $dateformat = "d-m-Y H:i:s";
 

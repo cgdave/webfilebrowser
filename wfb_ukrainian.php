@@ -1,4 +1,4 @@
-﻿// Ukranian (Dmytro KOVALOV)
+// Ukranian (Dmytro KOVALOV)
 
 $dateformat = "m-d-Y H:i:s";
 

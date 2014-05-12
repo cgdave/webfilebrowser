@@ -1,4 +1,4 @@
-﻿Web File Browser
+Web File Browser
 ================
 
 Introduction

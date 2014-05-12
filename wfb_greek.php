@@ -1,4 +1,4 @@
-﻿// Greek (Balaskas Euaggelos / ebalaskas@cs.teiath.gr)
+// Greek (Balaskas Euaggelos / ebalaskas@cs.teiath.gr)
 
 $dateformat = "d-m-Y H:i:s";
 

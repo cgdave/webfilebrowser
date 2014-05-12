@@ -1,4 +1,4 @@
-﻿// Swedish (Mikael WANBERG)
+// Swedish (Mikael WANBERG)
 
 $dateformat = "d-m-Y H:i:s";
 

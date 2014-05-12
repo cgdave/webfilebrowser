@@ -1,4 +1,4 @@
-﻿// Norwegian (Paul LOE)
+// Norwegian (Paul LOE)
 
 $dateformat = "d-m-Y H:i:s";
 

@@ -1,4 +1,4 @@
-﻿// German (Johannes EDER)
+// German (Johannes EDER)
 
 $dateformat = "d.m.Y H:i:s";
 

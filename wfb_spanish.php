@@ -1,4 +1,4 @@
-﻿// Spanish (Albert LOMBARTE)
+// Spanish (Albert LOMBARTE)
 
 $dateformat = "d-m-Y H:i:s";
 

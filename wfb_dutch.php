@@ -1,4 +1,4 @@
-﻿// Dutch (Luk VANLANDUYT)
+// Dutch (Luk VANLANDUYT)
 
 $dateformat = "m-d-Y H:i:s";
 

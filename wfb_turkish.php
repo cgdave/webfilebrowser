@@ -1,4 +1,4 @@
-﻿// Turkish (Tayfun Bilsel)
+// Turkish (Tayfun Bilsel)
 
 $dateformat = "d/m/Y H:i:s";
 
