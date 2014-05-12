@@ -50,10 +50,10 @@ For instance with Apache you can setup a `.htaccess` file like this:
 
 ```plain
 <Files "wfb.php">
-   AuthType Basic
-   AuthUserFile ".htpasswd"
-   AuthName "webFileBrowser"
-   Require valid-user
+	AuthType Basic
+	AuthUserFile ".htpasswd"
+	AuthName "webFileBrowser"
+	Require valid-user
 </Files>
 ```
  
