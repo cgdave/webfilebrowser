@@ -6,7 +6,7 @@ Introduction
 
 Web File Browser is a simple open-source file browser written in PHP (1 single file)
 that allows users to create, delete, edit, copy, rename, move and upload files and
-directories thru a light, full-text, web-based interface.
+directories through a light, full-text, web-based interface.
 
 ![Web File Browser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg)
 
@@ -15,7 +15,7 @@ Up-to-date version is available at [GitHub](https://github.com/cgdave/webfilebro
 Installation
 ------------
 
-Copy the `wfb.php` file (and optionaly the two directories `wfbimages` and `wfbtrash`) to your target
+Copy the `wfb.php` file (and optionally the two directories `wfbimages` and `wfbtrash`) to your target
 directory in your web server's document root.
 
 Start your favorite Web Browser and point to `http://yourserver.yourdomain/yourdirectory/wfb.php`.
@@ -42,7 +42,7 @@ Look at the source for optional customization.
 Security
 --------
 
-Web File Browser includes a builtin authentication (look at the source).
+Web File Browser includes a built-in authentication (look at the source).
 
 You can also rely on your web server for authentication. 
 
@@ -71,16 +71,16 @@ upload_max_filesize = 2M
 ```
 
 and verify that the value in `$uploadmaxsize` variable is the same as this value
-(for istance `2M` means 2 megabytes = 2097152 bytes) 
+(for instance `2M` means 2 megabytes = 2097152 bytes) 
 
 - Second, if you run your PHP-enabled web server under Linux/Unix, uploaded files (and created files/directories)
-are created under the ownership of the Unix user that runs your webserver. 
+are created under the ownership of the Unix user that runs your web server. 
 As the PHP function `chown()` does not work unless this user is root (which is obviously a bad idea)
 it is not possible to chown files to another user after creation. 
 
 A simple workaround is to `chown`/`chgrp` your directories to the web browser `user`/`group`, 
 
-Another workaround is to add the webbrowser group to the secondary groups of the user owner of the directories (that's what I do).
+Another workaround is to add the web browser group to the secondary groups of the user owner of the directories (that's what I do).
 In that case remember to set `$filemode` to `0664` and $dirmode to `0775`. 
 
 ### URL upload does not work, what's wrong ? 
@@ -91,7 +91,7 @@ Check your `php.ini` :
 allow_url_fopen = On
 ```
 
-and keep in mind that only URL explicitely pointing to a file (such as `http://myserver/myfile.txt`) can be URL-uploaded. 
+and keep in mind that only URL explicitly pointing to a file (such as `http://myserver/myfile.txt`) can be URL-uploaded. 
 
 ### How do I hide files ? 
 
@@ -149,8 +149,8 @@ History
 - Version 0.4b10 added multilingual support
 - Version 0.4b11 fixed a few bugs regarding PHP warnings
 - Version 0.4b12 fixed issue with "register_globals", added search (thanks to Larry CHAFFIN for the idea) and download features, added images (thaks again Larry), added optionnal images, fixed few bugs
-- Version 0.4b13 reorganized PHP and generated HTML/Javascript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) 
-- Version 0.4b14 added profile management and other authentication methods, fixed some subtile bugs (thanks to Jean-Jacques LE MOUEL) 
+- Version 0.4b13 reorganized PHP and generated HTML/JavaScript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) 
+- Version 0.4b14 added profile management and other authentication methods, fixed some tricky bugs (thanks to Jean-Jacques LE MOUEL) 
 - Version 0.4b15 migrated to GitHub, started modernization
  
 Disclaimer
