@@ -1,4 +1,4 @@
-![WebFileBrowser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/logo.png)
+![Web File Browser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/logo.png)
 ---
 
 Introduction
@@ -8,7 +8,7 @@ Web File Browser is a simple open-source file browser written in PHP (1 single f
 that allows users to create, delete, edit, copy, rename, move and upload files and
 directories through a light, full-text, web-based interface.
 
-![Web File Browser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg)
+![Web File Browser snapshot](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg)
 
 Up-to-date version is available at [GitHub](https://github.com/cgdave/webfilebrowser).
 
