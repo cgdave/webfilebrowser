@@ -1,5 +1,5 @@
-Web File Browser
-================
+![WebFileBrowser](https://raw.githubusercontent.com/cgdave/webfilebrowser/master/logo.png)
+---
 
 Introduction
 ------------
