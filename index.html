@@ -28,24 +28,21 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h1>
-<a name="web-file-browser" class="anchor" href="#web-file-browser"><span class="octicon octicon-link"></span></a>Web File Browser</h1>
-
-<h2>
+          <h2>
 <a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
 
 <p>Web File Browser is a simple open-source file browser written in PHP (1 single file)
 that allows users to create, delete, edit, copy, rename, move and upload files and
-directories thru a light, full-text, web-based interface.</p>
+directories through a light, full-text, web-based interface.</p>
 
-<p><img src="https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg" alt="Web File Browser"></p>
+<p><img src="https://raw.githubusercontent.com/cgdave/webfilebrowser/master/snapshot.jpg" alt="Web File Browser snapshot"></p>
 
 <p>Up-to-date version is available at <a href="https://github.com/cgdave/webfilebrowser">GitHub</a>.</p>
 
 <h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>Copy the <code>wfb.php</code> file (and optionaly the two directories <code>wfbimages</code> and <code>wfbtrash</code>) to your target
+<p>Copy the <code>wfb.php</code> file (and optionally the two directories <code>wfbimages</code> and <code>wfbtrash</code>) to your target
 directory in your web server's document root.</p>
 
 <p>Start your favorite Web Browser and point to <code>http://yourserver.yourdomain/yourdirectory/wfb.php</code>.</p>
@@ -72,17 +69,17 @@ directory in your web server's document root.</p>
 <h2>
 <a name="security" class="anchor" href="#security"><span class="octicon octicon-link"></span></a>Security</h2>
 
-<p>Web File Browser includes a builtin authentication (look at the source).</p>
+<p>Web File Browser includes a built-in authentication (look at the source).</p>
 
 <p>You can also rely on your web server for authentication. </p>
 
 <p>For instance with Apache you can setup a <code>.htaccess</code> file like this:</p>
 
 <pre lang="plain"><code>&lt;Files "wfb.php"&gt;
-   AuthType Basic
-   AuthUserFile ".htpasswd"
-   AuthName "webFileBrowser"
-   Require valid-user
+    AuthType Basic
+    AuthUserFile ".htpasswd"
+    AuthName "webFileBrowser"
+    Require valid-user
 &lt;/Files&gt;
 </code></pre>
 
@@ -101,16 +98,16 @@ upload_max_filesize = 2M
 </code></pre>
 
 <p>and verify that the value in <code>$uploadmaxsize</code> variable is the same as this value
-(for istance <code>2M</code> means 2 megabytes = 2097152 bytes) </p>
+(for instance <code>2M</code> means 2 megabytes = 2097152 bytes) </p>
 
 <ul>
 <li>Second, if you run your PHP-enabled web server under Linux/Unix, uploaded files (and created files/directories)
-are created under the ownership of the Unix user that runs your webserver. 
+are created under the ownership of the Unix user that runs your web server. 
 As the PHP function <code>chown()</code> does not work unless this user is root (which is obviously a bad idea)
 it is not possible to chown files to another user after creation. </li>
 </ul><p>A simple workaround is to <code>chown</code>/<code>chgrp</code> your directories to the web browser <code>user</code>/<code>group</code>, </p>
 
-<p>Another workaround is to add the webbrowser group to the secondary groups of the user owner of the directories (that's what I do).
+<p>Another workaround is to add the web browser group to the secondary groups of the user owner of the directories (that's what I do).
 In that case remember to set <code>$filemode</code> to <code>0664</code> and $dirmode to <code>0775</code>. </p>
 
 <h3>
@@ -121,7 +118,7 @@ In that case remember to set <code>$filemode</code> to <code>0664</code> and $di
 <pre><code>allow_url_fopen = On
 </code></pre>
 
-<p>and keep in mind that only URL explicitely pointing to a file (such as <code>http://myserver/myfile.txt</code>) can be URL-uploaded. </p>
+<p>and keep in mind that only URL explicitly pointing to a file (such as <code>http://myserver/myfile.txt</code>) can be URL-uploaded. </p>
 
 <h3>
 <a name="how-do-i-hide-files-" class="anchor" href="#how-do-i-hide-files-"><span class="octicon octicon-link"></span></a>How do I hide files ?</h3>
@@ -183,8 +180,8 @@ must exists and be writeable, if not the delete button is inhibited. </p>
 <li>Version 0.4b10 added multilingual support</li>
 <li>Version 0.4b11 fixed a few bugs regarding PHP warnings</li>
 <li>Version 0.4b12 fixed issue with "register_globals", added search (thanks to Larry CHAFFIN for the idea) and download features, added images (thaks again Larry), added optionnal images, fixed few bugs</li>
-<li>Version 0.4b13 reorganized PHP and generated HTML/Javascript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) </li>
-<li>Version 0.4b14 added profile management and other authentication methods, fixed some subtile bugs (thanks to Jean-Jacques LE MOUEL) </li>
+<li>Version 0.4b13 reorganized PHP and generated HTML/JavaScript code, added help messages in the status bar, added multiple file selection (also fixed few bugs) </li>
+<li>Version 0.4b14 added profile management and other authentication methods, fixed some tricky bugs (thanks to Jean-Jacques LE MOUEL) </li>
 <li>Version 0.4b15 migrated to GitHub, started modernization</li>
 </ul><h2>
 <a name="disclaimer" class="anchor" href="#disclaimer"><span class="octicon octicon-link"></span></a>Disclaimer</h2>
